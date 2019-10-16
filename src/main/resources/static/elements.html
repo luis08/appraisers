@@ -189,7 +189,7 @@
 							</div>
 							<div class="form-group col-md-6">
 								<label for="adjusterLastName">Adjuster Last Name</label>
-								<input type="text" class="form-control" id="adjusterLasttName" required>
+								<input type="text" class="form-control" id="adjusterLastName" required>
 							</div>
 						</dvi>
 						<div class="form-row">
@@ -266,14 +266,14 @@
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" type="radio" name="insuredClaimantSameAsOwner"
 										id="yesSameAsOwner" value="yes">
-									<label class="form-check-label" for="yesInQuestion">
+									<label class="form-check-label" for="yesSameAsOwner">
 										Yes
 									</label>
 								</div>
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" type="radio" name="insuredClaimantSameAsOwner"
 										id="notSameAsOwner" value="no">
-									<label class="form-check-label" for="noInQuestion">
+									<label class="form-check-label" for="notSameAsOwner">
 										No
 									</label>
 								</div>
@@ -317,7 +317,7 @@
 						<div class="form-row">
 							<div class="form-group col-md-6">
 								<label for="claimantAddress1">Address</label>
-								<input type="text" class="form-control" id="claimantAddress" placeholder="1234 Main St">
+								<input type="text" class="form-control" id="claimantAddress1" placeholder="1234 Main St">
 							</div>
 							<div class="form-group col-md-6">
 								<label for="claimantAddress2">Address 2</label>
@@ -367,8 +367,8 @@
 								<input type="text" class="form-control" id="license">
 							</div>
 							<div class="form-group col-md-2">
-								<label for="locationstate">State</label>
-								<select id="locationstate" class="form-control">
+								<label for="locationState">State</label>
+								<select id="locationState" class="form-control">
 									<option selected>Choose...</option>
 									<option>...</option>
 								</select>
@@ -377,7 +377,7 @@
 						<div class="form-row">
 							<div class="form-group col-md-4">
 								<label for="dateOfLoss">Date of Loss</label>
-								<input type="date" class="form-control" id="accountNumber">
+								<input type="date" class="form-control" id="dateOfLoss">
 							</div>
 							<div class="form-group col-md-4">
 								<label for="typeOfLoss">Type of Loss</label>
@@ -446,23 +446,23 @@
 							<div class="form-group col-md-12">
 								<label>If total loss, provide ACV evaluation?</label>&nbsp;
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="requestSalvageBids"
-										id="yesRequestSalvageBids" value="yes">
-									<label class="form-check-label" for="yesRequestSalvageBids">
+									<input class="form-check-input" type="radio" name="provideAcvEvaluation"
+										id="yesProvideAcvEvaluation" value="yes">
+									<label class="form-check-label" for="yesProvideAcvEvaluation">
 										Yes
 									</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="requestSalvageBids"
-										id="notRequestSalvageBids" value="no">
+									<input class="form-check-input" type="radio" name="provideAcvEvaluation"
+										id="notProvideAcvEvaluation" value="no">
 									<label class="form-check-label" for="notRequestSalvageBids">
 										No
 									</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="requestSalvageBids"
-										id="naRequestSalvageBids" value="unknown">
-									<label class="form-check-label" for="naRequestSalvageBids">
+									<input class="form-check-input" type="radio" name="provideAcvEvaluation"
+										id="naProvideAcvEvaluation" value="unknown">
+									<label class="form-check-label" for="naProvideAcvEvaluation">
 										N/A
 									</label>
 								</div>
@@ -551,7 +551,7 @@
 							</label>
 							<div class="col-md-9">
 								<span class="btn btn-default btn-file">
-									<input id="input-2" name="input2[]" type="file" class="file" multiple
+									<input id="uploadElement" name="input2[]" type="file" class="file" multiple
 										data-show-upload="true" data-show-caption="true">
 								</span>
 							</div>
