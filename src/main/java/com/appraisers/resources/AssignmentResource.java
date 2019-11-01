@@ -1,15 +1,20 @@
 package com.appraisers.resources;
 
-import org.springframework.web.bind.annotation.PostMapping;
+import com.appraisers.app.assignments.service.AssingmentRequestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.appraisers.app.assignments.dto.AssingmentRequestDto;
 
 @RestController
 public class AssignmentResource {
-    @PostMapping("assignment/save")
-    public AssingmentRequestDto save() {
-        return new AssingmentRequestDto();
+    @Autowired
+    private AssingmentRequestService assingmentRequestService;
+
+    @RequestMapping(value = "assignment/save", method = RequestMethod.POST)
+    public Integer save(AssingmentRequestDto dto) {
+        return assingmentRequestService.save(dto);
     }
 
     @RequestMapping("assignment")

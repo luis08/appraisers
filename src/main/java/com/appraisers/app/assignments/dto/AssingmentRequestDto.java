@@ -2,6 +2,7 @@ package com.appraisers.app.assignments.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 public class AssingmentRequestDto {
     @Getter
@@ -42,12 +43,12 @@ public class AssingmentRequestDto {
 
     @Getter
     @Setter
-
     private String inputState;
+
     @Getter
     @Setter
-
     private String inputZip;
+
     @Getter
     @Setter
     private String claimNumber;
@@ -71,65 +72,66 @@ public class AssingmentRequestDto {
     @Getter
     @Setter
     private String claimantFirst;
+
     @Getter
     @Setter
-
     private String claimantLast;
+
     @Getter
     @Setter
-
     private String claimantPhone;
+
     @Getter
     @Setter
-
     private String claimantEmail;
+
     @Getter
     @Setter
-
     private String claimantAddress1;
+
     @Getter
     @Setter
-
     private String claimantAddress2;
+
     @Getter
     @Setter
-
     private String claimantCity;
+
     @Getter
     @Setter
-
     private String claimantState;
+
     @Getter
     @Setter
 
     private String claimantZip;
+
     @Getter
     @Setter
-
     private String make;
+
     @Getter
     @Setter
-
     private String model;
+
     @Getter
     @Setter
-
     private String year;
+
     @Getter
     @Setter
-
     private String vin;
+
     @Getter
     @Setter
-
     private String license;
+
     @Getter
     @Setter
-
     private String locationState;
+
     @Getter
     @Setter
-
     private String dateOfLoss;
 
     @Getter
@@ -190,6 +192,5 @@ public class AssingmentRequestDto {
 
     @Getter
     @Setter
-    private String uploadElement;
-
+    private MultipartFile[] uploadingFiles;
 }
