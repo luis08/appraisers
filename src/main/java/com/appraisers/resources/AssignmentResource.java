@@ -17,7 +17,7 @@ public class AssignmentResource {
         this.assingmentRequestService = assingmentRequestService;
     }
 
-    @RequestMapping(value = "assignment/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/assignment/save", method = RequestMethod.POST)
     public Integer save(AssingmentRequestDto dto) {
         return assingmentRequestService.save(dto);
     }
