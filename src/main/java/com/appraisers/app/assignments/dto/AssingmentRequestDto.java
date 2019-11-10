@@ -39,15 +39,15 @@ public class AssingmentRequestDto {
 
     @Getter
     @Setter
-    private String inputCity;
+    private String companyCity;
 
     @Getter
     @Setter
-    private String inputState;
+    private String companyState;
 
     @Getter
     @Setter
-    private String inputZip;
+    private String companyZip;
 
     @Getter
     @Setter

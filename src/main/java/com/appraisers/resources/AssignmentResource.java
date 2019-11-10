@@ -9,8 +9,13 @@ import com.appraisers.app.assignments.dto.AssingmentRequestDto;
 
 @RestController
 public class AssignmentResource {
-    @Autowired
+
     private AssingmentRequestService assingmentRequestService;
+
+    @Autowired
+    public AssignmentResource(AssingmentRequestService assingmentRequestService) {
+        this.assingmentRequestService = assingmentRequestService;
+    }
 
     @RequestMapping(value = "assignment/save", method = RequestMethod.POST)
     public Integer save(AssingmentRequestDto dto) {
