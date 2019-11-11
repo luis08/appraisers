@@ -22,7 +22,7 @@ public class AssignmentResource {
         return assingmentRequestService.save(dto);
     }
 
-    @RequestMapping("assignment")
+    @RequestMapping("/assignment")
     public AssingmentRequestDto get() {
         return new AssingmentRequestDto();
     }
