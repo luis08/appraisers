@@ -1,4 +1,4 @@
-package com.appraisers.app.assignments;
+package com.appraisers;
 
 import com.appraisers.resources.AssignmentResource;
 import org.springframework.boot.SpringApplication;
@@ -12,5 +12,4 @@ public class AssignmentsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AssignmentsApplication.class, args);
 	}
-
 }
