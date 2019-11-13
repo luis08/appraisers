@@ -1,4 +1,4 @@
-package com.appraisers.resources;
+package com.appraisers.app.resources;
 
 import com.appraisers.app.assignments.service.AssingmentRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
