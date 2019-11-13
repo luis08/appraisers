@@ -5,7 +5,7 @@ import com.appraisers.app.assignments.service.AssingmentRequestService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AssingmentRequestServiceImpl implements AssingmentRequestService {
+public class AssigmentRequestServiceImpl implements AssingmentRequestService {
     @Override
     public int save(AssingmentRequestDto dto) {
         return 0;
