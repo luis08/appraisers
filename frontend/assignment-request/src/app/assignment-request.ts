@@ -1,0 +1,51 @@
+export class AssignmentRequest {
+
+  accountNumber: string;
+  adjusterEmail: string;
+  adjusterFirstName: string;
+  adjusterLastName: string;
+  adjusterPhone: string;
+  claimantAddress1: string;
+  claimantAddress2: string;
+  claimantCity: string;
+  claimantEmail: string;
+  claimantFirst: string;
+  claimantLast: string;
+  claimantPhone: string;
+  claimantState: string;
+  claimantZip: string;
+  claimNumber: string;
+  companyAddress1: string;
+  companyAddress2: string;
+  companyCity: string;
+  companyName: string;
+  companyState: string;
+  companyZip: string;
+  dateOfLoss: Date;
+  deductibleAmount: number;
+  insuredClaimantSameAsOwner: string;
+  insuredOrClaimant: string;
+  isRepairFacility: string;
+  license: string;
+  licenseState: string;
+  lossDescription: string;
+  make: string;
+  model: string;
+  policyNumber: string;
+  provideAcvEvaluation: string;
+  providesCopyOfAppraisal: string;
+  requestSalvageBids: string;
+  typeOfLoss: string;
+  uploadingFiles: any[];
+  valuationMethod: string;
+  vehicleLocationAddress1: string;
+  vehicleLocationAddress2: string;
+  vehicleLocationCity: string;
+  vehicleLocationName: string;
+  vehicleLocationPhone: string;
+  vehicleLocationState: string;
+  vehicleLocationZip: string;
+  vin: string;
+  year: number;
+
+}
