@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import com.appraisers.app.assignments.dto.AssignmentRequestDto;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 @RestController
 public class AssignmentResource {
     private AssignmentRequestService assignmentRequestService;
@@ -32,7 +30,7 @@ public class AssignmentResource {
     @NotNull
     private ResponseEntity<AssignmentRequestProjection> doSave(AssignmentRequestDto dto) {
         try {
-            AssignmentRequestProjection assignmentRequestProjection = new AssignmentRequestProjection(assignmentRequestService.save(dto));
+            AssignmentRequestProjection assignmentRequestProjection = new AssignmentRequestProjection(assignmentRequestService.create(dto));
             return ResponseEntity.ok().body(assignmentRequestProjection);
         } catch (Exception e) {
             LOGGER.error("Unable to save assignment request", e);

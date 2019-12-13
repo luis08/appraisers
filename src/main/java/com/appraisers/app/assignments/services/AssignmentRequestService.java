@@ -6,6 +6,6 @@ import com.appraisers.app.assignments.dto.AssignmentRequestDto;
 import java.text.ParseException;
 
 public interface AssignmentRequestService {
-    AssignmentRequest save(AssignmentRequestDto dto) throws ParseException;
+    AssignmentRequest create(AssignmentRequestDto dto) throws ParseException;
     AssignmentRequest get(Long id);
 }

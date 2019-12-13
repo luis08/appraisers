@@ -22,10 +22,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @Service
 public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequestAttachmentService {
+    private static final String USER_DIR = "user.dir";
     private final static Logger LOGGER =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private static final String USER_DIR = "user.dir";
-
 
     @Autowired
     private AssignmentRequestAttachmentRepository repository;
@@ -37,9 +36,7 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
         List<AssignmentRequestAttachment> assignmentRequestAttachments = multipartFiles.stream()
                 .map(mpf -> createAttachment(mpf, assignmentRequest))
                 .collect(Collectors.toList());
-        List<AssignmentRequestAttachment> saved = repository.saveAll(assignmentRequestAttachments);
-        repository.flush();;
-        return saved;
+        return repository.saveAll(assignmentRequestAttachments);
     }
 
     @Override
@@ -54,6 +51,8 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
         assignmentRequestAttachment.setAssignmentRequest(assignmentRequest);
         assignmentRequestAttachment.setPath(storedPath);
         assignmentRequestAttachment.setOriginalFileName(mpf.getOriginalFilename());
+        assignmentRequestAttachment.setFileType(mpf.getContentType());
+        assignmentRequestAttachment.setDescription("AssignmentRequestAttachment");
         try {
             Files.copy(mpf.getInputStream(), Paths.get(storedPath));
         } catch (IOException e) {
@@ -70,8 +69,6 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
         UUID uuid = UUID.randomUUID();
         String extension = FilenameUtils.getExtension(fullPath);
         String workingDirectory = System.getProperty(USER_DIR);
-        String storagePath = FilenameUtils.normalize(workingDirectory.concat(File.separator).concat(uuid.toString()).concat(".").concat(extension));
-        LOGGER.log(Level.ALL, "Storing: ".concat(storagePath));
-        return storagePath;
+        return FilenameUtils.normalize(workingDirectory.concat(File.separator).concat(uuid.toString()).concat(".").concat(extension));
     }
 }

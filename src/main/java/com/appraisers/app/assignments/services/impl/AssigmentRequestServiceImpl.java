@@ -7,7 +7,6 @@ import com.appraisers.app.assignments.dto.AssignmentRequestDto;
 import com.appraisers.app.assignments.dto.utils.DtoUtils;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
 import com.appraisers.app.assignments.services.AssignmentRequestService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -32,17 +30,16 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
     private AssignmentRequestRepository assignmentRequestRepository;
 
     @Override
-    public AssignmentRequest save(AssignmentRequestDto dto) throws ParseException {
+    public AssignmentRequest create(AssignmentRequestDto dto) throws ParseException {
         checkNotNull(dto);
         AssignmentRequest assignmentRequest = getAssignmentRequest(dto);
         assignmentRequest.setActive(true);
-        AssignmentRequest saved = assignmentRequestRepository.save(assignmentRequest);
-        List<AssignmentRequestAttachment> attachments = getAssignmentRequestAttachments(dto, saved);
-        assignmentRequest.setAttachments(attachments.stream().collect(Collectors.toSet()));
-        return assignmentRequestRepository.saveAndFlush(saved);
+        assignmentRequestRepository.save(assignmentRequest);
+        createAssignmentRequestAttachments(dto, assignmentRequest);
+        return assignmentRequest;
     }
 
-    private List<AssignmentRequestAttachment> getAssignmentRequestAttachments(AssignmentRequestDto dto, AssignmentRequest assignmentRequest) {
+    private List<AssignmentRequestAttachment> createAssignmentRequestAttachments(AssignmentRequestDto dto, AssignmentRequest assignmentRequest) {
         if (Objects.nonNull(dto.getUploadingFiles())) {
             List<MultipartFile> multipartFiles = Arrays.asList(dto.getUploadingFiles());
             return assignmentRequestAttachmentService.create(assignmentRequest, multipartFiles);
