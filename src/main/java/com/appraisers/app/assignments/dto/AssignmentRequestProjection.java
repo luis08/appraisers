@@ -12,6 +12,14 @@ public class AssignmentRequestProjection extends DomainComponentProjection {
         this.component = assignmentRequest;
     }
 
+    public Long getId() {
+        return this.component.getId();
+    }
+
+    public String getIdentifier() {
+        return this.component.getIdentifier();
+    }
+
     public String getAccountNumber() {
         return this.component.getAccountNumber();
     }

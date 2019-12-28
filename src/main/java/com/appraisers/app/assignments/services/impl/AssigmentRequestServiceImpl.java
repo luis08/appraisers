@@ -4,20 +4,22 @@ import com.appraisers.app.assignments.data.AssignmentRequestRepository;
 import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.AssignmentRequestAttachment;
 import com.appraisers.app.assignments.dto.AssignmentRequestDto;
-import com.appraisers.app.assignments.dto.utils.DtoUtils;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
 import com.appraisers.app.assignments.services.AssignmentRequestService;
-import org.apache.logging.log4j.util.Strings;
+import com.appraisers.app.assignments.utils.AssignmentUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -28,15 +30,29 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
 
     @Autowired
     private AssignmentRequestRepository assignmentRequestRepository;
+    public static final String IDENTIFIER_MASK = "%s%02d%02d-%03d";
 
     @Override
     public AssignmentRequest create(AssignmentRequestDto dto) throws ParseException {
         checkNotNull(dto);
-        AssignmentRequest assignmentRequest = getAssignmentRequest(dto);
+        AssignmentRequest assignmentRequest = AssignmentUtils.getAssignmentRequest(dto);
         assignmentRequest.setActive(true);
+        assignmentRequest.setIdentifier(getIdentifier());
         assignmentRequestRepository.save(assignmentRequest);
         createAssignmentRequestAttachments(dto, assignmentRequest);
         return assignmentRequest;
+    }
+
+    @Override
+    public Page<AssignmentRequest> findAll(Pageable pageable) {
+        checkNotNull(pageable, "You must request a page");
+        return assignmentRequestRepository.findAll(pageable);
+    }
+
+    @Override
+    public AssignmentRequest get(Long id) {
+        checkNotNull(id);
+        return assignmentRequestRepository.getOne(id);
     }
 
     private List<AssignmentRequestAttachment> createAssignmentRequestAttachments(AssignmentRequestDto dto, AssignmentRequest assignmentRequest) {
@@ -48,69 +64,16 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
         }
     }
 
-    @Override
-    public AssignmentRequest get(Long id) {
-        checkNotNull(id);
-        return assignmentRequestRepository.getOne(id);
-    }
-
-    private AssignmentRequest getAssignmentRequest(AssignmentRequestDto dto) throws ParseException {
-        AssignmentRequest assignmentRequest = new AssignmentRequest();
-        assignmentRequest.setAccountNumber(dto.getAccountNumber());
-        assignmentRequest.setAdjusterEmail(dto.getAdjusterEmail());
-        assignmentRequest.setAdjusterFirstName(dto.getAdjusterFirstName());
-        assignmentRequest.setAdjusterLastName(dto.getAdjusterLastName());
-        assignmentRequest.setAdjusterPhone(dto.getAdjusterPhone());
-        assignmentRequest.setClaimantAddress1(dto.getClaimantAddress1());
-        assignmentRequest.setClaimantAddress2(dto.getClaimantAddress2());
-        assignmentRequest.setClaimantCity(dto.getClaimantCity());
-        assignmentRequest.setClaimantEmail(dto.getClaimantEmail());
-        assignmentRequest.setClaimantFirst(dto.getClaimantFirst());
-        assignmentRequest.setClaimantLast(dto.getClaimantLast());
-        assignmentRequest.setClaimantPhone(dto.getClaimantPhone());
-        assignmentRequest.setClaimantState(dto.getClaimantState());
-        assignmentRequest.setClaimantZip(dto.getClaimantZip());
-        assignmentRequest.setClaimNumber(dto.getClaimNumber());
-        assignmentRequest.setCompanyAddress1(dto.getCompanyAddress1());
-        assignmentRequest.setCompanyAddress2(dto.getCompanyAddress2());
-        assignmentRequest.setCompanyCity(dto.getCompanyCity());
-        assignmentRequest.setCompanyName(dto.getCompanyName());
-        assignmentRequest.setCompanyState(dto.getCompanyState());
-        assignmentRequest.setCompanyZip(dto.getCompanyZip());
-        if(Strings.isNotEmpty(dto.getDateOfLoss())) {
-            assignmentRequest.setDateOfLoss(new SimpleDateFormat("MM/dd/yyyy").parse(dto.getDateOfLoss()));
-        }
-        if(Strings.isNotEmpty(dto.getDeductibleAmount())){
-            assignmentRequest.setDeductibleAmount(dto.getDeductibleAmount());
-        }
-
-        assignmentRequest.setInsuredClaimantSameAsOwner(DtoUtils.parseOrNull(dto.getInsuredClaimantSameAsOwner()));
-        assignmentRequest.setInsuredOrClaimant(dto.getInsuredOrClaimant());
-        assignmentRequest.setIsRepairFacility(DtoUtils.parseOrNull(dto.getIsRepairFacility()));
-        assignmentRequest.setLicense(dto.getLicense());
-        assignmentRequest.setLicenseState(dto.getLicenseState());
-        assignmentRequest.setLossDescription(dto.getLossDescription());
-        assignmentRequest.setMake(dto.getMake());
-        assignmentRequest.setModel(dto.getModel());
-        assignmentRequest.setPolicyNumber(dto.getPolicyNumber());
-        assignmentRequest.setProvideAcvEvaluation(DtoUtils.parseOrNull(dto.getProvideAcvEvaluation()));
-        assignmentRequest.setProvidesCopyOfAppraisal(DtoUtils.parseOrNull(dto.getProvidesCopyOfAppraisal()));
-        assignmentRequest.setRequestSalvageBids(DtoUtils.parseOrNull(dto.getRequestSalvageBids()));
-        if(Objects.isNull(dto.getTypeOfLoss())) {
-            assignmentRequest.setTypeOfLoss("Unknown");
-        } else {
-            assignmentRequest.setTypeOfLoss(dto.getTypeOfLoss());
-        }
-        assignmentRequest.setValuationMethod(dto.getValuationMethod());
-        assignmentRequest.setVehicleLocationAddress1(dto.getVehicleLocationAddress1());
-        assignmentRequest.setVehicleLocationAddress2(dto.getVehicleLocationAddress2());
-        assignmentRequest.setVehicleLocationCity(dto.getVehicleLocationCity());
-        assignmentRequest.setVehicleLocationName(dto.getVehicleLocationName());
-        assignmentRequest.setVehicleLocationPhone(dto.getVehicleLocationPhone());
-        assignmentRequest.setVehicleLocationState(dto.getVehicleLocationState());
-        assignmentRequest.setVehicleLocationZip(dto.getVehicleLocationZip());
-        assignmentRequest.setVin(dto.getVin());
-        assignmentRequest.setYear(dto.getYear());
-        return assignmentRequest;
+    private String getIdentifier() {
+        LocalDate start = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate end = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+        java.util.Date from = Date.from(start.atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
+        java.util.Date to = Date.from(end.plus(Period.ofDays(1)).atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
+        //int sequence = assignmentRequestRepository.countAllByDateCreatedGreaterThanEqualAndDateCreatedLessThan(from, to);
+        int sequence = assignmentRequestRepository.findAllWithDateCreatedBetween(from, to).size();
+        int year = start.getYear();
+        String theYear = Integer.toString(year).substring(2);
+        return String.format(IDENTIFIER_MASK, theYear, start.getMonth().getValue(), LocalDate.now().getDayOfMonth(), sequence);
     }
 }
+

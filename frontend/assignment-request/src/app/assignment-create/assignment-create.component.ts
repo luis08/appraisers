@@ -12,6 +12,7 @@ export class AssignmentCreateComponent implements OnInit {
   registerForm: FormGroup;
   states: string[];
   files: any[];
+  nextFileId: number;
 
   constructor(private assigmentService: AssignmentService,
               private formBuilder: FormBuilder,
@@ -19,6 +20,7 @@ export class AssignmentCreateComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.nextFileId = 1;
     this.files = new Array<string>();
     this.states = this.assigmentService.getStates();
     this.registerForm = this.formBuilder.group({
@@ -73,8 +75,7 @@ export class AssignmentCreateComponent implements OnInit {
     });
   }
 
-
-  _getIt() : AssignmentRequest {
+  _getIt(): AssignmentRequest {
     let assignmentRequest: AssignmentRequest = this.registerForm.value;
 
     return null;
@@ -95,16 +96,24 @@ export class AssignmentCreateComponent implements OnInit {
       });
   }
 
+  removeFile(file) {
+    if(file && file.id) {
+      let newFiles = this.files.filter(f => f.id != file.id);
+      this.files = newFiles;
+    }
+  }
+
   onFileSelectionChange(event) {
     if (event.target && event.target.files.length) {
       for (let f of event.target.files) {
+        f.id = this.nextFileId++;
         this.files.push(f);
       }
     }
   }
 
   /**
-   * Testing TODO: Remove
+   * Testing TODO: Remove Populate
    */
   populate() {
     this.registerForm.setValue({accountNumber:"accountNumber_val",
@@ -155,7 +164,5 @@ export class AssignmentCreateComponent implements OnInit {
       vehicleLocationZip:"44444",
       vin:"vin_val",
       year:1991});
-    console.log(this.registerForm.value);
   }
-
 }

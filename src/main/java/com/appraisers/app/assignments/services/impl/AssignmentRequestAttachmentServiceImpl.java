@@ -1,8 +1,9 @@
-package com.appraisers.app.assignments.services;
+package com.appraisers.app.assignments.services.impl;
 
 import com.appraisers.app.assignments.data.AssignmentRequestAttachmentRepository;
 import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.AssignmentRequestAttachment;
+import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

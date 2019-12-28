@@ -3,11 +3,7 @@ package com.appraisers.app.assignments.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import java.util.Date;
 
 @MappedSuperclass
@@ -22,6 +18,7 @@ public class DomainComponent {
 
     @Getter
     @Column(name = "date_created", insertable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
 
     @Getter
@@ -36,6 +33,6 @@ public class DomainComponent {
 
     @Getter
     @Setter
-    @Column(name ="inactive_date")
+    @Column(name = "inactive_date")
     private Date inactiveDate;
 }

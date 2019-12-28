@@ -1,6 +1,5 @@
 package com.appraisers.app.assignments.domain;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +14,11 @@ import java.util.Set;
 @Entity
 @Table(name = "assignment_request")
 public class AssignmentRequest extends DomainComponent {
+
+    @Getter
+    @Setter
+    @Column(name = "identifier")
+    private String identifier;
 
     @Getter
     @Setter

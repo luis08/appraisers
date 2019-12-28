@@ -54,7 +54,10 @@ export class AssignmentService {
     let url = baseUrl.concat("/create");
     console.log('calling ' + url);
     let formData = new FormData();
-    assignmentRequest.uploadingFiles.forEach(f => formData.append('files', f));
+    assignmentRequest.uploadingFiles.forEach(f => {
+      delete f.id;
+      formData.append('files', f);
+    });
     assignmentRequest.uploadingFiles = [];
     let serializedAssignmentRequest = new Blob([JSON.stringify(assignmentRequest)],
       {type: 'application/json'});

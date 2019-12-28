@@ -1,5 +1,6 @@
 export class AssignmentRequest {
-
+  id: number;
+  identifier: string;
   accountNumber: string;
   adjusterEmail: string;
   adjusterFirstName: string;
