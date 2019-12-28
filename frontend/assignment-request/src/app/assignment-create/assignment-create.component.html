@@ -388,31 +388,43 @@
                  id="vehicleLocationPhone" formControlName="vehicleLocationPhone">
         </div>
       </div>
-      <h4>Upload Documents and Photos</h4>
+
       <div class="form-row">
-        <label class="col-md-9 control-label">
-          Attachment(s)
-          (Attach multiple files.)
-        </label>
-        <div class="col-md-6">
-								<span class="btn btn-default btn-file">
-									<input id="fileInput" name="fileInput" type="file" class="file" multiple
-                         (change)="onFileSelectionChange($event)"
-                         data-show-upload="true" data-show-caption="true">
-								</span>
-        </div>
-        <div class="col-md-6">
-          <ul>
-            <li *ngFor="let file of files" value="{{file.id}}">
-              <button class="btn btn-link" (click)="removeFile(file)">[delete]&nbsp;{{file.name}}</button>
-            </li>
-          </ul>
-        </div>
+<!--        <label class="col-md-9 control-label">-->
+<!--          Attachment(s)-->
+<!--          (Attach multiple files.)-->
+<!--        </label>-->
+<!--        <div class="col-md-6">-->
+<!--								<span class="btn btn-default btn-file">-->
+<!--									<input id="fileInput" name="fileInput" type="file" class="file" multiple-->
+<!--                         (change)="onFileSelectionChange($event)"-->
+<!--                         data-show-upload="true" >-->
+<!--								</span>-->
+<!--        </div>-->
+
       </div>
       <div class="form-row">
-        <div class="col-md-12">
-          <button type="button" class="main_btn" (click)="create()">Save Me</button>
-          <button type="button" class="btn btn-secondary" (click)="populate()">Populate Me</button>
+        <div class="col-md-5">
+          <button type="button" [disabled]="isNew" class="main_btn" (click)="create()">Save Me</button>
+          <!-- TODO: remove next line -->
+          <br/><br/><br/><button type="button" class="btn btn-secondary" (click)="populate()">Populate Me</button>
+        </div>
+        <div class="col-md-7">
+          <h4>Upload Documents and Photos</h4>
+            <span class="btn btn-default btn-file" >
+									<input id="additionalFileInput" name="additionalFileInput" type="file" class="file" multiple
+                         (change)="onAdditionalFilesSelectionChange($event)"
+                         data-show-upload="true" >
+								</span>
+            <ul>
+              <li *ngFor="let file of files" value="{{file.id}}">
+                <button class="btn btn-link" (click)="removeFile(file)">[delete]</button>
+                &nbsp;
+                <button *ngIf="!isNew" type="button" class="btn btn-link">{{file.name}}</button>
+                <span *ngIf="isNew">{{file.name}}</span>
+              </li>
+            </ul>
+
         </div>
       </div>
     </div><!-- End form col-md-12-->

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {AssignmentRequest} from "../assignment-request"
 import {AssignmentService} from '../assignment.service';
 import {FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
@@ -12,7 +12,10 @@ export class AssignmentCreateComponent implements OnInit {
   registerForm: FormGroup;
   states: string[];
   files: any[];
-  nextFileId: number;
+  nextFileId: number = -1;
+  isNew: boolean = true;
+  assignmentRequest: AssignmentRequest;
+  additionalFilesValue: string = "";
 
   constructor(private assigmentService: AssignmentService,
               private formBuilder: FormBuilder,
@@ -20,7 +23,8 @@ export class AssignmentCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.nextFileId = 1;
+    this.isNew = !this.assigmentService;
+    this.nextFileId = -1;
     this.files = new Array<string>();
     this.states = this.assigmentService.getStates();
     this.registerForm = this.formBuilder.group({
@@ -51,7 +55,7 @@ export class AssignmentCreateComponent implements OnInit {
       insuredOrClaimant: [''],
       isRepairFacility: [''],
       license: [''],
-      licenseState:[''],
+      licenseState: [''],
       locationState: [''],
       lossDescription: [''],
       make: [''],
@@ -97,7 +101,7 @@ export class AssignmentCreateComponent implements OnInit {
   }
 
   removeFile(file) {
-    if(file && file.id) {
+    if (file && file.id) {
       let newFiles = this.files.filter(f => f.id != file.id);
       this.files = newFiles;
     }
@@ -106,7 +110,16 @@ export class AssignmentCreateComponent implements OnInit {
   onFileSelectionChange(event) {
     if (event.target && event.target.files.length) {
       for (let f of event.target.files) {
-        f.id = this.nextFileId++;
+        f.id = this.nextFileId--;
+        this.files.push(f);
+      }
+    }
+  }
+
+  onAdditionalFilesSelectionChange(event) {
+    if (event.target && event.target.files.length) {
+      for (let f of event.target.files) {
+        f.id = this.nextFileId--;
         this.files.push(f);
       }
     }
@@ -116,53 +129,55 @@ export class AssignmentCreateComponent implements OnInit {
    * Testing TODO: Remove Populate
    */
   populate() {
-    this.registerForm.setValue({accountNumber:"accountNumber_val",
-      adjusterEmail:"adjuster@nowhere.com",
-      adjusterFirstName:"adjusterFirstName_val",
-      adjusterLastName:"adjusterLastName_val",
-      adjusterPhone:"305-111-1111",
-      claimantAddress1:"claimantAddress1_val",
-      claimantAddress2:"claimantAddress2_val",
-      claimantCity:"claimantCity_val",
-      claimantEmail:"claimant@nowhere.com",
-      claimantFirst:"claimantFirst_val",
-      claimantLast:"claimantLast_val",
-      claimantPhone:"305-111-1112",
-      claimantState:"CO",
-      claimantZip:"22222",
-      claimNumber:"claimNumber_val",
-      companyAddress1:"companyAddress1_val",
-      companyAddress2:"companyAddress2_val",
-      companyName:"companyName_val",
-      companyCity:"companyCity_val",
-      companyState:"CT",
-      companyZip:"33333",
-      dateOfLoss:"12/01/2019",
-      deductibleAmount:"100",
-      insuredClaimantSameAsOwner:"FALSE",
-      insuredOrClaimant:"Claimant",
-      isRepairFacility:"TRUE",
-      license:"license_val",
+    this.registerForm.setValue({
+      accountNumber: "accountNumber_val",
+      adjusterEmail: "adjuster@nowhere.com",
+      adjusterFirstName: "adjusterFirstName_val",
+      adjusterLastName: "adjusterLastName_val",
+      adjusterPhone: "305-111-1111",
+      claimantAddress1: "claimantAddress1_val",
+      claimantAddress2: "claimantAddress2_val",
+      claimantCity: "claimantCity_val",
+      claimantEmail: "claimant@nowhere.com",
+      claimantFirst: "claimantFirst_val",
+      claimantLast: "claimantLast_val",
+      claimantPhone: "305-111-1112",
+      claimantState: "CO",
+      claimantZip: "22222",
+      claimNumber: "claimNumber_val",
+      companyAddress1: "companyAddress1_val",
+      companyAddress2: "companyAddress2_val",
+      companyName: "companyName_val",
+      companyCity: "companyCity_val",
+      companyState: "CT",
+      companyZip: "33333",
+      dateOfLoss: "12/01/2019",
+      deductibleAmount: "100",
+      insuredClaimantSameAsOwner: "FALSE",
+      insuredOrClaimant: "Claimant",
+      isRepairFacility: "TRUE",
+      license: "license_val",
       licenseState: "AK",
-      locationState:"AZ",
-      lossDescription:"lossDescription_val",
-      make:"make_val",
-      model:"model_val",
-      policyNumber:"policyNumber_val",
-      provideAcvEvaluation:"TRUE",
-      providesCopyOfAppraisal:"FALSE",
-      requestSalvageBids:"TRUE",
-      typeOfLoss:"typeOfLoss_val",
-      valuation:"valuation_val",
-      valuationMethod:"valuationMethod_val",
-      vehicleLocationAddress1:"vehicleLocationAddress1_val",
-      vehicleLocationAddress2:"vehicleLocationAddress2_val",
-      vehicleLocationCity:"vehicleLocationCity_val",
-      vehicleLocationName:"vehicleLocationName_val",
-      vehicleLocationPhone:"vehicleLocationPhone_val",
-      vehicleLocationState:"CA",
-      vehicleLocationZip:"44444",
-      vin:"vin_val",
-      year:1991});
+      locationState: "AZ",
+      lossDescription: "lossDescription_val",
+      make: "make_val",
+      model: "model_val",
+      policyNumber: "policyNumber_val",
+      provideAcvEvaluation: "TRUE",
+      providesCopyOfAppraisal: "FALSE",
+      requestSalvageBids: "TRUE",
+      typeOfLoss: "typeOfLoss_val",
+      valuation: "valuation_val",
+      valuationMethod: "valuationMethod_val",
+      vehicleLocationAddress1: "vehicleLocationAddress1_val",
+      vehicleLocationAddress2: "vehicleLocationAddress2_val",
+      vehicleLocationCity: "vehicleLocationCity_val",
+      vehicleLocationName: "vehicleLocationName_val",
+      vehicleLocationPhone: "vehicleLocationPhone_val",
+      vehicleLocationState: "CA",
+      vehicleLocationZip: "44444",
+      vin: "vin_val",
+      year: 1991
+    });
   }
 }
