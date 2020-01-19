@@ -4,6 +4,9 @@ import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.dto.DomainComponentProjection;
 import com.appraisers.app.assignments.dto.utils.DtoUtils;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class AssignmentRequestProjection extends DomainComponentProjection {
     private final AssignmentRequest component;
 
@@ -202,5 +205,11 @@ public class AssignmentRequestProjection extends DomainComponentProjection {
 
     public String getYear() {
         return this.component.getYear();
+    }
+
+    public List<AssignmentRequestAttachmentProjection> getAttachments() {
+        return component.getAttachments().stream()
+                .map(a -> new AssignmentRequestAttachmentProjection(a))
+                .collect(Collectors.toList());
     }
 }

@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   };
   jwPager:any = {};
   assignmentRequests: AssignmentRequest[];
+  assignmentRequest: AssignmentRequest;
 
   constructor(private http: HttpClient) {
   }
@@ -40,14 +41,6 @@ export class AppComponent implements OnInit {
         console.log(response);
       });
   }
-
-  _setPager(response) {
-
-    this.pager.currentPage = response.content;
-    this.pager.totalPages = response.totalPages;
-    this.jwPager = paginate(response.totalElements, this.pager.pageNumber, this.pager.pageSize, this.pager.pageLinkDisplayCount);
-  }
-
   ngOnInit() {
     // an example array of 150 items to be paged
     this.items = Array(150).fill(0).map((x, i) => ({id: (i + 1), name: `Item ${i + 1}`}));
@@ -60,5 +53,15 @@ export class AppComponent implements OnInit {
     if (changes.items.currentValue !== changes.items.previousValue) {
       this.setPage(1);
     }
+  }
+
+  open(assignmentRequest: AssignmentRequest) {
+    this.assignmentRequest = assignmentRequest;
+  }
+
+  _setPager(response) {
+    this.pager.currentPage = response.content;
+    this.pager.totalPages = response.totalPages;
+    this.jwPager = paginate(response.totalElements, this.pager.pageNumber, this.pager.pageSize, this.pager.pageLinkDisplayCount);
   }
 }

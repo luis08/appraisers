@@ -20,6 +20,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -38,9 +39,10 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
         AssignmentRequest assignmentRequest = AssignmentUtils.getAssignmentRequest(dto);
         assignmentRequest.setActive(true);
         assignmentRequest.setIdentifier(getIdentifier());
+
         assignmentRequestRepository.save(assignmentRequest);
-        createAssignmentRequestAttachments(dto, assignmentRequest);
-        return assignmentRequest;
+        assignmentRequest.setAttachments(createAttachments(dto, assignmentRequest));
+        return assignmentRequestRepository.getOne(assignmentRequest.getId());
     }
 
     @Override
@@ -55,12 +57,12 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
         return assignmentRequestRepository.getOne(id);
     }
 
-    private List<AssignmentRequestAttachment> createAssignmentRequestAttachments(AssignmentRequestDto dto, AssignmentRequest assignmentRequest) {
+    private Set<AssignmentRequestAttachment> createAttachments(AssignmentRequestDto dto, AssignmentRequest assignmentRequest) {
         if (Objects.nonNull(dto.getUploadingFiles())) {
             List<MultipartFile> multipartFiles = Arrays.asList(dto.getUploadingFiles());
-            return assignmentRequestAttachmentService.create(assignmentRequest, multipartFiles);
+            return assignmentRequestAttachmentService.create(assignmentRequest, multipartFiles).stream().collect(Collectors.toSet());
         } else {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
     }
 

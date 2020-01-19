@@ -61,6 +61,12 @@
             <artifactId>google-oauth-client-jetty</artifactId>
             <version>1.11.0-beta</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.auth/google-auth-library-oauth2-http -->
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-oauth2-http</artifactId>
+            <version>0.19.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

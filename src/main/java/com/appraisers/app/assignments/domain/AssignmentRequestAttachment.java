@@ -22,6 +22,10 @@ public class AssignmentRequestAttachment extends DomainComponent {
 
     @Getter
     @Setter
+    private String sanitizedFileName;
+
+    @Getter
+    @Setter
     private String fileType;
 
     @Getter
@@ -30,7 +34,7 @@ public class AssignmentRequestAttachment extends DomainComponent {
 
     @Getter
     @Setter
-    private String storage_id;
+    private String storageId;
 
     @Getter
     @Setter

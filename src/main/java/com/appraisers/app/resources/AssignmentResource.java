@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +40,8 @@ public class AssignmentResource {
 
     private ResponseEntity<AssignmentRequestProjection> doSave(AssignmentRequestDto dto) {
         try {
-            AssignmentRequestProjection assignmentRequestProjection = new AssignmentRequestProjection(assignmentRequestService.create(dto));
+            AssignmentRequest assignmentRequest = assignmentRequestService.create(dto);
+            AssignmentRequestProjection assignmentRequestProjection = new AssignmentRequestProjection(assignmentRequest);
             return ResponseEntity.ok().body(assignmentRequestProjection);
         } catch (Exception e) {
             LOGGER.error("Unable to save assignment request", e);

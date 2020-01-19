@@ -7,10 +7,10 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.FileContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.StringUtils;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
@@ -30,7 +30,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Service
-public class GoogleStorageServiceImpl implements CloudStorageService {
+public class FirstGoogleStorageServiceImpl implements CloudStorageService {
     private static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -45,6 +45,11 @@ public class GoogleStorageServiceImpl implements CloudStorageService {
 
     @Override
     public Optional<byte[]> get(String id, String type) {
+        return Optional.empty();
+    }
+
+    @NotNull
+    private Optional<byte[]> doGet(String id, String type) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             getDrive().files().export(id, type).executeMediaAndDownloadTo(outputStream);
@@ -67,7 +72,7 @@ public class GoogleStorageServiceImpl implements CloudStorageService {
 
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws Exception {
         // Load client secrets.
-        InputStream in = GoogleStorageServiceImpl.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        InputStream in = FirstGoogleStorageServiceImpl.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
             throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }

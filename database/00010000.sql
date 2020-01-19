@@ -153,6 +153,7 @@ create table assignment_request_attachment (
   id int not null auto_increment,
   assignment_request_id int not null,
   original_file_name varchar(500) not null, 
+  sanitized_file_name varchar(500) not null, 
   path varchar(500) not null, 
   file_type varchar(20),
   description varchar(1000),

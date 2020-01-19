@@ -23,7 +23,11 @@ export class AssignmentCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isNew = !this.assigmentService;
+    this._resetForm();
+  }
+
+  _resetForm() {
+    this.isNew = !this.assignmentRequest;
     this.nextFileId = -1;
     this.files = new Array<string>();
     this.states = this.assigmentService.getStates();
@@ -94,9 +98,10 @@ export class AssignmentCreateComponent implements OnInit {
   create() {
     let assignmentRequest: AssignmentRequest = this._getAssignmentRequest();
     this.assigmentService.create(assignmentRequest).toPromise()
-      .then((ar) => {
-        console.log('done');
-        console.log(ar);
+      .then((ar: AssignmentRequest) => {
+        if(ar.id > 0){
+          this._resetForm();
+        }
       });
   }
 

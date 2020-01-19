@@ -405,7 +405,8 @@
       </div>
       <div class="form-row">
         <div class="col-md-5">
-          <button type="button" [disabled]="isNew" class="main_btn" (click)="create()">Save Me</button>
+          <button *ngIf="isNew" type="button" [disabled]="!isNew" class="main_btn" (click)="create()">Save Me</button>
+          <span class="main_btn" *ngIf="!isNew">Your request was submitted successfully</span>
           <!-- TODO: remove next line -->
           <br/><br/><br/><button type="button" class="btn btn-secondary" (click)="populate()">Populate Me</button>
         </div>

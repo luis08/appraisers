@@ -1,0 +1,32 @@
+<h4>Assignment Request {{assignmentRequest.identifier}}</h4>
+<table class="table table-striped w-100">
+  <thead>
+  <tr>
+    <th class="align-top text-left">Field</th>
+    <th class="align-top text-left">Value</th>
+    <th class="align-top text-left">&nbsp;</th>
+    <th class="align-top text-left">Field</th>
+    <th class="align-top text-left">Value</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let f of fields">
+    <td class="align-top text-left">{{f.label1}}</td>
+    <td class="align-top text-left">{{f.value1}}</td>
+    <td class="align-top text-left"></td>
+    <td class="align-top text-left">{{f.label2}}</td>
+    <td class="align-top text-left">{{f.value2}}</td>
+  </tr>
+  </tbody>
+</table>
+<div id="attachments-container">
+  <ng-container  *ngFor="let attachment of attachments">
+  <a href="{{attachment.href}}" type="button"
+     target="_blank"
+          class="btn btn-outline-secondary m-1">{{attachment.originalFileName}}</a>
+  <img src="{{attachment.href}}">
+  </ng-container>
+</div>
+<div class="m-3">
+  <button type="button" class="btn btn-primary" (click)="close()">Close</button>
+</div>

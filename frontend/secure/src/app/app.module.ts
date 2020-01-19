@@ -1,18 +1,19 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
-import {RouterModule, Routes} from '@angular/router';
 
 import {AppComponent} from './app.component';
 import {HomeComponent} from './home/home.component';
 import {JwPaginationComponent} from "jw-angular-pagination";
+import { AssignmentRequestQuickViewComponent } from './assignment-request-quick-view/assignment-request-quick-view.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     JwPaginationComponent,
-    HomeComponent
+    HomeComponent,
+    AssignmentRequestQuickViewComponent
   ],
   imports: [
     BrowserModule, HttpClientModule
