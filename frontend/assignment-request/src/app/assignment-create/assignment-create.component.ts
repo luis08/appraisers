@@ -1,14 +1,17 @@
-import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {AssignmentRequest} from "../assignment-request"
 import {AssignmentService} from '../assignment.service';
-import {FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {UploadSelectionService} from "../upload-selection.service";
 
 @Component({
   selector: 'app-assignment-create',
   templateUrl: './assignment-create.component.html',
   styleUrls: ['./assignment-create.component.css']
 })
-export class AssignmentCreateComponent implements OnInit {
+export class AssignmentCreateComponent implements OnInit, OnDestroy {
+  subscription: Subscription;
   registerForm: FormGroup;
   states: string[];
   files: any[];
@@ -19,11 +22,25 @@ export class AssignmentCreateComponent implements OnInit {
 
   constructor(private assigmentService: AssignmentService,
               private formBuilder: FormBuilder,
-              private ref: ChangeDetectorRef) {
+              private ref: ChangeDetectorRef,
+              private uploadSelectionService: UploadSelectionService) {
   }
 
   ngOnInit() {
+    this.subscription = this.uploadSelectionService.getFiles().subscribe(files => {
+      console.log('Received');
+      console.log(files);
+      if(files) {
+        this.files = files;
+      } else {
+        this.files = [];
+      }
+    });
     this._resetForm();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   _resetForm() {
@@ -99,9 +116,8 @@ export class AssignmentCreateComponent implements OnInit {
     let assignmentRequest: AssignmentRequest = this._getAssignmentRequest();
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
-        if(ar.id > 0){
-          this._resetForm();
-        }
+        this._resetForm();
+        this.uploadSelectionService.clearFiles();
       });
   }
 

@@ -5,7 +5,12 @@ import { AppComponent } from './app.component';
 import { AssignmentCreateComponent } from './assignment-create/assignment-create.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import { MultiUploadComponent } from './multi-upload/multi-upload.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatToolbarModule,
+  MatIconModule,
+  MatCardModule,
+  MatButtonModule,
+  MatProgressBarModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -16,8 +21,14 @@ import { MultiUploadComponent } from './multi-upload/multi-upload.component';
   imports: [
     BrowserModule,
     HttpClientModule,
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCardModule,
+    MatProgressBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AssignmentRequestAttachmentRepository extends JpaRepository<AssignmentRequestAttachment, Long> {
-    List<AssignmentRequestAttachment> findAllByAssignmentRequestAndOriginalFileName(AssignmentRequest assignmentRequest, List<String> fileNames);
+    List<AssignmentRequestAttachment> findAllByAssignmentRequest(AssignmentRequest assignmentRequest);
 }

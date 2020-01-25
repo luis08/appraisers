@@ -35,7 +35,6 @@ public class WindowsStorageStrategy implements PlatformStorageStrategy {
         return new StoredItemDto(null, dto.getSanitizedFileName(), dto.getSanitizedFileName());
     }
 
-
     @Override
     public StoredItemDto get(String id) {
         return null;

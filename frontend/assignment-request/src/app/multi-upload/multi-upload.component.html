@@ -1,1 +1,17 @@
-<p>multi-upload works!</p>
+<div class="border  mh-100">
+  <ul>
+    <li *ngFor="let file of files" value="{{file.id}}" class="text-left">
+      <button class="btn btn-link" (click)="removeFile(file)">[delete]</button>
+      &nbsp;
+      <button type="button" class="btn btn-link">{{file.data.name}}</button>
+      <span>{{file.name}}</span>
+    </li>
+  </ul>
+  <div class="overflow-auto">
+    <button class="btn btn-link" color="warn" (click)="onClick()">
+      Upload
+    </button>
+  </div>
+  <input type="file" #fileUpload id="fileUpload" name="fileUpload" multiple="multiple" accept="image/*"
+         style="display:none;"/></div>
+

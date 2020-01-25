@@ -43,7 +43,7 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
         checkNotNull(assignmentRequest);
         checkNotNull(multipartFiles);
         List<String> fileNames = multipartFiles.stream().map(MultipartFile::getOriginalFilename).collect(Collectors.toList());
-        List<String> existingFileNames = repository.findAllByAssignmentRequestAndOriginalFileName(assignmentRequest, fileNames).stream().map(AssignmentRequestAttachment::getOriginalFileName).collect(Collectors.toList());
+        List<String> existingFileNames = repository.findAllByAssignmentRequest(assignmentRequest).stream().map(AssignmentRequestAttachment::getOriginalFileName).collect(Collectors.toList());
         List<String> repeatedFileNames = fileNames.stream().filter(existingFileNames::contains).collect(Collectors.toList());
         if (repeatedFileNames.isEmpty()) {
             List<AssignmentRequestAttachment> assignmentRequestAttachments = new ArrayList<>();
