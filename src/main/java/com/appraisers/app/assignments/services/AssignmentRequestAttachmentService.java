@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AssignmentRequestAttachmentService {
-    List<AssignmentRequestAttachment> create(AssignmentRequest request, List<MultipartFile> multipartFile);
+    List<AssignmentRequestAttachment> create(AssignmentRequest request, List<MultipartFile> multipartFile) throws Exception;
     AssignmentRequestAttachment get(Long id);
     Optional<DocumentResponseData> getResponseData(Long id);
 }

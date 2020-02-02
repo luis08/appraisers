@@ -4,11 +4,13 @@ import com.appraisers.app.assignments.data.AssignmentRequestAttachmentRepository
 import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.AssignmentRequestAttachment;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
+import com.appraisers.app.gdrive.GDriveUtil;
 import com.appraisers.resources.dto.DocumentResponseData;
 import com.appraisers.storage.StorageService;
 import com.appraisers.storage.StoredItemDto;
 import com.appraisers.storage.StoringItemDto;
 import com.appraisers.storage.local.StorageType;
+import com.google.api.services.drive.model.File;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +41,7 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
     private StorageService storageService;
 
     @Override
-    public List<AssignmentRequestAttachment> create(AssignmentRequest assignmentRequest, List<MultipartFile> multipartFiles) {
+    public List<AssignmentRequestAttachment> create(AssignmentRequest assignmentRequest, List<MultipartFile> multipartFiles) throws Exception {
         checkNotNull(assignmentRequest);
         checkNotNull(multipartFiles);
         List<String> fileNames = multipartFiles.stream().map(MultipartFile::getOriginalFilename).collect(Collectors.toList());
@@ -49,6 +51,10 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
             List<AssignmentRequestAttachment> assignmentRequestAttachments = new ArrayList<>();
             for (MultipartFile mpf : multipartFiles) {
                 AssignmentRequestAttachment assignmentRequestAttachment = getAssignmentRequestAttachment(assignmentRequest, mpf);
+
+                File gDriveFile = GDriveUtil.uploadFile(mpf, assignmentRequestAttachment.getAssignmentRequest().getIdentifier());
+
+                assignmentRequestAttachment.setStorageId(gDriveFile.getId());
                 assignmentRequestAttachments.add(assignmentRequestAttachment);
             }
             return repository.saveAll(assignmentRequestAttachments);
@@ -60,14 +66,21 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
     }
 
     @NotNull
-    private AssignmentRequestAttachment getAssignmentRequestAttachment(AssignmentRequest assignmentRequest, MultipartFile mpf) {
-        AssignmentRequestAttachment attachment = getAttachment(assignmentRequest, mpf);
-        StoredItemDto storedItemDto = store(assignmentRequest.getIdentifier(), attachment, mpf);
-        attachment.setSanitizedFileName(storedItemDto.getSanitizedFileName());
-        attachment.setPath(storedItemDto.getSanitizedFileName());
-        attachment.setStorageId(storedItemDto.getStorageId());
+    private AssignmentRequestAttachment getAssignmentRequestAttachment(AssignmentRequest assignmentRequest, MultipartFile mpf) throws IOException, NotSupportedException {
+        String errorMessage = String.format("Error saving file '{}'", mpf.getOriginalFilename());
+        try {
+            AssignmentRequestAttachment attachment = getAttachment(assignmentRequest, mpf);
+            StoringItemDto storingItemDto = new StoringItemDto(mpf.getInputStream(), attachment.getAssignmentRequest().getIdentifier(), StorageType.ASSIGNMENT_REQUEST, attachment.getOriginalFileName(), mpf.getContentType());
+            Optional<StoredItemDto> storedItemDto = storageService.create(storingItemDto);
+            attachment.setSanitizedFileName(storedItemDto.get().getSanitizedFileName());
+            attachment.setPath(storedItemDto.get().getSanitizedFileName());
+            attachment.setStorageId(storedItemDto.get().getStorageId());
 
-        return attachment;
+            return attachment;
+        } catch (IOException | NotSupportedException e) {
+            LOGGER.error(errorMessage, e);
+            return null;
+        }
     }
 
     private StoredItemDto store(String identifier, AssignmentRequestAttachment assignmentRequestAttachment, MultipartFile mpf) {

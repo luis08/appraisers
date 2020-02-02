@@ -1,6 +1,6 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {UploadSelectionService} from "../upload-selection.service";
-//https://jsonworld.com/demo/angular-8-communication-between-components-using-subject-and-observable
+
 @Component({
   selector: 'app-multi-upload',
   templateUrl: './multi-upload.component.html',
