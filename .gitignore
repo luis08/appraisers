@@ -12,6 +12,7 @@ pubspec.lock
 .c9
 .idea/
 /target/
+/assignment-requests/
 .devcontainer/*
 !.devcontainer/recommended-devcontainer.json
 !.devcontainer/recommended-Dockerfile

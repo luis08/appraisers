@@ -124,7 +124,7 @@ public class AssignmentRequestProjection extends DomainComponentProjection {
     }
 
     public String getIsRepairFacility() {
-        return this.component.getIsRepairFacility().toString();
+        return DtoUtils.toStringOrNull(this.component.getIsRepairFacility());
     }
 
     public String getLicense() {
