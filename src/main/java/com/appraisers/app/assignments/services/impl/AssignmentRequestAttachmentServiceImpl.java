@@ -4,13 +4,11 @@ import com.appraisers.app.assignments.data.AssignmentRequestAttachmentRepository
 import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.AssignmentRequestAttachment;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
-import com.appraisers.app.gdrive.GDriveUtil;
 import com.appraisers.resources.dto.DocumentResponseData;
 import com.appraisers.storage.StorageService;
 import com.appraisers.storage.StoredItemDto;
 import com.appraisers.storage.StoringItemDto;
 import com.appraisers.storage.local.StorageType;
-import com.google.api.services.drive.model.File;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +50,9 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
             for (MultipartFile mpf : multipartFiles) {
                 AssignmentRequestAttachment assignmentRequestAttachment = getAssignmentRequestAttachment(assignmentRequest, mpf);
 
-                File gDriveFile = GDriveUtil.uploadFile(mpf, assignmentRequestAttachment.getAssignmentRequest().getIdentifier());
+                //File gDriveFile = GDriveUtil.uploadFile(mpf, assignmentRequestAttachment.getAssignmentRequest().getIdentifier());
 
-                assignmentRequestAttachment.setStorageId(gDriveFile.getId());
+                //assignmentRequestAttachment.setStorageId(gDriveFile.getId());
                 assignmentRequestAttachments.add(assignmentRequestAttachment);
             }
             return repository.saveAll(assignmentRequestAttachments);
@@ -65,8 +63,7 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
         }
     }
 
-    @NotNull
-    private AssignmentRequestAttachment getAssignmentRequestAttachment(AssignmentRequest assignmentRequest, MultipartFile mpf) throws IOException, NotSupportedException {
+    private AssignmentRequestAttachment getAssignmentRequestAttachment(AssignmentRequest assignmentRequest, MultipartFile mpf) throws {
         String errorMessage = String.format("Error saving file '{}'", mpf.getOriginalFilename());
         try {
             AssignmentRequestAttachment attachment = getAttachment(assignmentRequest, mpf);

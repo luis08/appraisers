@@ -5,6 +5,7 @@ import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.AssignmentRequestAttachment;
 import com.appraisers.app.assignments.dto.AssignmentRequestDto;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
+import com.appraisers.app.assignments.services.AssignmentRequestDocumentService;
 import com.appraisers.app.assignments.services.AssignmentRequestService;
 import com.appraisers.app.assignments.utils.AssignmentUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -32,6 +32,7 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
     @Autowired
     private AssignmentRequestRepository assignmentRequestRepository;
     public static final String IDENTIFIER_MASK = "%s%02d%02d-%03d";
+    private AssignmentRequestDocumentService assignmentRequestDocumentService;
 
     @Override
     public AssignmentRequest create(AssignmentRequestDto dto) throws Exception {
@@ -42,7 +43,9 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
 
         assignmentRequestRepository.save(assignmentRequest);
         assignmentRequest.setAttachments(createAttachments(dto, assignmentRequest));
-        return assignmentRequestRepository.getOne(assignmentRequest.getId());
+        AssignmentRequest finalRequest = assignmentRequestRepository.getOne(assignmentRequest.getId());
+        String document = assignmentRequestDocumentService.getDocument(finalRequest);
+        return finalRequest;
     }
 
     @Override
@@ -71,7 +74,6 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
         LocalDate end = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
         java.util.Date from = Date.from(start.atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
         java.util.Date to = Date.from(end.plus(Period.ofDays(1)).atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
-        //int sequence = assignmentRequestRepository.countAllByDateCreatedGreaterThanEqualAndDateCreatedLessThan(from, to);
         int sequence = assignmentRequestRepository.findAllWithDateCreatedBetween(from, to).size();
         int year = start.getYear();
         String theYear = Integer.toString(year).substring(2);
