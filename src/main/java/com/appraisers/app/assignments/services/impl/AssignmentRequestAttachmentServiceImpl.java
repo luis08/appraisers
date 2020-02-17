@@ -63,7 +63,7 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
         }
     }
 
-    private AssignmentRequestAttachment getAssignmentRequestAttachment(AssignmentRequest assignmentRequest, MultipartFile mpf) throws {
+    private AssignmentRequestAttachment getAssignmentRequestAttachment(AssignmentRequest assignmentRequest, MultipartFile mpf) {
         String errorMessage = String.format("Error saving file '{}'", mpf.getOriginalFilename());
         try {
             AssignmentRequestAttachment attachment = getAttachment(assignmentRequest, mpf);
