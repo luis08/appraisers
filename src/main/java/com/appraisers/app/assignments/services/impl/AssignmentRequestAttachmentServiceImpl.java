@@ -4,27 +4,21 @@ import com.appraisers.app.assignments.data.AssignmentRequestAttachmentRepository
 import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.AssignmentRequestAttachment;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
-<<<<<<< HEAD
-=======
 import com.appraisers.app.gbuckets.GDrive;
 import com.appraisers.app.gbuckets.GDriveCommonResponse;
 import com.appraisers.app.gmail.GmailBuilderService;
 import com.appraisers.app.gmail.GmailService;
->>>>>>> master
 import com.appraisers.resources.dto.DocumentResponseData;
 import com.appraisers.storage.StorageService;
 import com.appraisers.storage.StoredItemDto;
 import com.appraisers.storage.StoringItemDto;
 import com.appraisers.storage.local.StorageType;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
 
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
@@ -66,14 +60,9 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
             for (MultipartFile mpf : multipartFiles) {
                 AssignmentRequestAttachment assignmentRequestAttachment = getAssignmentRequestAttachment(assignmentRequest, mpf);
 
-<<<<<<< HEAD
-                //File gDriveFile = GDriveUtil.uploadFile(mpf, assignmentRequestAttachment.getAssignmentRequest().getIdentifier());
-
-                //assignmentRequestAttachment.setStorageId(gDriveFile.getId());
-=======
                 GDriveCommonResponse uploadFileToGoogleDrive = gDrive.uploadFile(mpf, assignmentRequestAttachment.getAssignmentRequest().getIdentifier());
 
-                if(!emailSent) {
+                if (!emailSent) {
                     new GmailBuilderService()
                             .setTo("andreespirela@gmail.com")
                             .setSubject("TEST")
@@ -82,10 +71,9 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
                     emailSent = true;
                 }
 
-                if(uploadFileToGoogleDrive != null) {
-                assignmentRequestAttachment.setStorageId(uploadFileToGoogleDrive.getId());
->>>>>>> master
-                assignmentRequestAttachments.add(assignmentRequestAttachment);
+                if (uploadFileToGoogleDrive != null) {
+                    assignmentRequestAttachment.setStorageId(uploadFileToGoogleDrive.getId());
+                    assignmentRequestAttachments.add(assignmentRequestAttachment);
                 }
             }
             return repository.saveAll(assignmentRequestAttachments);
