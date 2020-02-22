@@ -24,14 +24,15 @@ public class WindowsStorageStrategy implements PlatformStorageStrategy {
 
     @Override
     public StoredItemDto create(PlatformStoringItemDto dto) throws IOException {
-        String containerPath = Paths.get(homePath, dto.getPath()).toAbsolutePath().toString();
-
-        if (!Files.isDirectory(Paths.get(containerPath))) {
-            createDirectory(containerPath);
-        }
-        Path finalPath = Paths.get(containerPath, dto.getSanitizedFileName());
-        File file = new File(finalPath.toAbsolutePath().toString());
-        Files.copy(dto.getInputStream(), file.toPath());
+    //        String containerPath = Paths.get(homePath, dto.getPath()).toAbsolutePath().toString();
+    //
+    //        if (!Files.isDirectory(Paths.get(containerPath))) {
+    //            createDirectory(containerPath);
+    //        }
+    //
+    //        Path finalPath = Paths.get(containerPath, dto.getSanitizedFileName());
+    //        File file = new File(finalPath.toAbsolutePath().toString());
+    //        Files.copy(dto.getInputStream(), file.toPath());
         return new StoredItemDto(null, dto.getSanitizedFileName(), dto.getSanitizedFileName());
     }
 
