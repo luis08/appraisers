@@ -3,6 +3,7 @@ package com.appraisers.app.assignments.services.impl;
 import com.appraisers.app.assignments.data.AssignmentRequestAttachmentRepository;
 import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.AssignmentRequestAttachment;
+import com.appraisers.app.assignments.dto.AssignmentRequestAttachmentSave;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
 import com.appraisers.app.gbuckets.GDrive;
 import com.appraisers.app.gbuckets.GDriveCommonResponse;
@@ -13,6 +14,7 @@ import com.appraisers.storage.StorageService;
 import com.appraisers.storage.StoredItemDto;
 import com.appraisers.storage.StoringItemDto;
 import com.appraisers.storage.local.StorageType;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -48,35 +51,15 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
     private GmailService gmailService;
 
     @Override
-    public List<AssignmentRequestAttachment> create(AssignmentRequest assignmentRequest, List<MultipartFile> multipartFiles) throws Exception {
+    public List<AssignmentRequestAttachmentSave> create(AssignmentRequest assignmentRequest, List<MultipartFile> multipartFiles) throws Exception {
         checkNotNull(assignmentRequest);
         checkNotNull(multipartFiles);
         List<String> fileNames = multipartFiles.stream().map(MultipartFile::getOriginalFilename).collect(Collectors.toList());
         List<String> existingFileNames = repository.findAllByAssignmentRequest(assignmentRequest).stream().map(AssignmentRequestAttachment::getOriginalFileName).collect(Collectors.toList());
         List<String> repeatedFileNames = fileNames.stream().filter(existingFileNames::contains).collect(Collectors.toList());
         if (repeatedFileNames.isEmpty()) {
-            List<AssignmentRequestAttachment> assignmentRequestAttachments = new ArrayList<>();
-            boolean emailSent = false;
-            for (MultipartFile mpf : multipartFiles) {
-                AssignmentRequestAttachment assignmentRequestAttachment = getAssignmentRequestAttachment(assignmentRequest, mpf);
-
-                GDriveCommonResponse uploadFileToGoogleDrive = gDrive.uploadFile(mpf, assignmentRequestAttachment.getAssignmentRequest().getIdentifier());
-
-                if (!emailSent) {
-                    new GmailBuilderService()
-                            .setTo("andreespirela@gmail.com")
-                            .setSubject("TEST")
-                            .setBody("New folder has been created: https://drive.google.com/drive/folders/" + uploadFileToGoogleDrive.getFolderId())
-                            .send(this.gmailService);
-                    emailSent = true;
-                }
-
-                if (uploadFileToGoogleDrive != null) {
-                    assignmentRequestAttachment.setStorageId(uploadFileToGoogleDrive.getId());
-                    assignmentRequestAttachments.add(assignmentRequestAttachment);
-                }
-            }
-            return repository.saveAll(assignmentRequestAttachments);
+            List<AssignmentRequestAttachmentSave> assignmentRequestAttachmentSaves = addAttachments(assignmentRequest, multipartFiles);
+            return assignmentRequestAttachmentSaves;
         } else {
             String errorFileNames = repeatedFileNames.stream().map(f -> String.format("'%s'", f)).collect(Collectors.joining(", "));
             String errorMessage = String.format("There are repeated file names: [%s]", errorFileNames);
@@ -84,8 +67,45 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
         }
     }
 
+    private List<AssignmentRequestAttachmentSave> addAttachments(AssignmentRequest assignmentRequest, List<MultipartFile> multipartFiles) throws IOException {
+        List<AssignmentRequestAttachmentSave> assignmentRequestAttachments = new ArrayList<>();
+        List<String> emailMessage = new ArrayList<>();
+        boolean notifiedFolderCreation = false;
+        for (MultipartFile mpf : multipartFiles) {
+            AssignmentRequestAttachment assignmentRequestAttachment = getAssignmentRequestAttachment(assignmentRequest, mpf);
+
+            String identifier = assignmentRequestAttachment.getAssignmentRequest().getIdentifier();
+            GDriveCommonResponse uploadFileToGoogleDrive = gDrive.uploadFile(mpf, identifier);
+
+            if (!notifiedFolderCreation) {
+                notifiedFolderCreation = true;
+                emailMessage.add(getFolderCreatedMessage(uploadFileToGoogleDrive.getFolderId()));
+            }
+
+            if (uploadFileToGoogleDrive != null) {
+                assignmentRequestAttachment.setStorageId(uploadFileToGoogleDrive.getId());
+                assignmentRequestAttachments.add(new AssignmentRequestAttachmentSave(assignmentRequestAttachment, getFileUploadMessage(assignmentRequestAttachment)));
+            } else {
+                emailMessage.add(getFailedUploadMessage(assignmentRequestAttachment));
+            }
+        }
+        return assignmentRequestAttachments;
+    }
+
+    private String getFileUploadMessage(AssignmentRequestAttachment assignmentRequestAttachment) {
+        return String.format("Uploaded file [%s]", assignmentRequestAttachment.getOriginalFileName());
+    }
+
+    private String getFailedUploadMessage(AssignmentRequestAttachment assignmentRequestAttachment) {
+        return String.format("Failed uploading file [%s]", assignmentRequestAttachment.getOriginalFileName());
+    }
+
+    private String getFolderCreatedMessage(String folderName) {
+        return String.format("New folder created: https://drive.google.com/drive/folders/%s", folderName);
+    }
+
     private AssignmentRequestAttachment getAssignmentRequestAttachment(AssignmentRequest assignmentRequest, MultipartFile mpf) {
-        String errorMessage = String.format("Error saving file '{}'", mpf.getOriginalFilename());
+        String errorMessage = String.format("Error saving file '%s'", mpf.getOriginalFilename());
         try {
             AssignmentRequestAttachment attachment = getAttachment(assignmentRequest, mpf);
             StoringItemDto storingItemDto = new StoringItemDto(mpf.getInputStream(), attachment.getAssignmentRequest().getIdentifier(), StorageType.ASSIGNMENT_REQUEST, attachment.getOriginalFileName(), mpf.getContentType());
@@ -102,7 +122,7 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
     }
 
     private StoredItemDto store(String identifier, AssignmentRequestAttachment assignmentRequestAttachment, MultipartFile mpf) {
-        String errorMessage = String.format("Error saving file '{}'", mpf.getOriginalFilename());
+        String errorMessage = String.format("Error saving file '%s'", mpf.getOriginalFilename());
         try {
             String domainId = assignmentRequestAttachment.getAssignmentRequest().getIdentifier();
             StorageType storageType = StorageType.ASSIGNMENT_REQUEST;

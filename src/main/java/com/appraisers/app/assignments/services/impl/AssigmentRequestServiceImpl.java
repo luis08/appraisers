@@ -2,13 +2,16 @@ package com.appraisers.app.assignments.services.impl;
 
 import com.appraisers.app.assignments.data.AssignmentRequestRepository;
 import com.appraisers.app.assignments.domain.AssignmentRequest;
-import com.appraisers.app.assignments.domain.AssignmentRequestAttachment;
+import com.appraisers.app.assignments.dto.AssignmentRequestAttachmentSave;
 import com.appraisers.app.assignments.dto.AssignmentRequestDto;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
 import com.appraisers.app.assignments.services.AssignmentRequestDocumentService;
 import com.appraisers.app.assignments.services.AssignmentRequestService;
 import com.appraisers.app.assignments.utils.AssignmentUtils;
+import com.appraisers.app.gmail.GmailBuilderService;
+import com.appraisers.app.gmail.GmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,8 +29,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @Service
 public class AssigmentRequestServiceImpl implements AssignmentRequestService {
+    public static final String LINE_SEPARATOR = System.lineSeparator();
+
+    @Value("${com.appraisers.app.assignmentRequest.notificationEmail")
+    private String notificationEmail;
+
     @Autowired
     private AssignmentRequestAttachmentService assignmentRequestAttachmentService;
+
+    @Autowired
+    private GmailService gmailService;
 
     @Autowired
     private AssignmentRequestRepository assignmentRequestRepository;
@@ -42,10 +53,27 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
         assignmentRequest.setIdentifier(getIdentifier());
 
         assignmentRequestRepository.save(assignmentRequest);
-        assignmentRequest.setAttachments(createAttachments(dto, assignmentRequest));
+        Set<AssignmentRequestAttachmentSave> attachments = createAttachments(dto, assignmentRequest);
+        assignmentRequest.setAttachments(attachments.stream().map(AssignmentRequestAttachmentSave::getAssignmentRequestAttachment).collect(Collectors.toSet()));
+
         AssignmentRequest finalRequest = assignmentRequestRepository.getOne(assignmentRequest.getId());
-        String document = assignmentRequestDocumentService.getDocument(finalRequest);
+        String document = assignmentRequestDocumentService.getDocument(finalRequest)
+                .concat(LINE_SEPARATOR)
+                .concat(attachments.stream()
+                        .map(AssignmentRequestAttachmentSave::getSaveMessage)
+                        .collect(Collectors.joining(LINE_SEPARATOR)));
+        sendEmail(document);
+
         return finalRequest;
+    }
+
+    private void sendEmail(String document, String identifier) {
+        String subject = String.format("Assignment Request Recieved %s", identifier);
+        new GmailBuilderService()
+                .setTo(notificationEmail)
+                .setSubject(subject)
+                .setBody(document)
+                .send(this.gmailService);
     }
 
     @Override
@@ -60,10 +88,11 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
         return assignmentRequestRepository.getOne(id);
     }
 
-    private Set<AssignmentRequestAttachment> createAttachments(AssignmentRequestDto dto, AssignmentRequest assignmentRequest) throws Exception {
+    private Set<AssignmentRequestAttachmentSave> createAttachments(AssignmentRequestDto dto, AssignmentRequest assignmentRequest) throws Exception {
         if (Objects.nonNull(dto.getUploadingFiles())) {
             List<MultipartFile> multipartFiles = Arrays.asList(dto.getUploadingFiles());
-            return assignmentRequestAttachmentService.create(assignmentRequest, multipartFiles).stream().collect(Collectors.toSet());
+            Set<AssignmentRequestAttachmentSave> assignmentRequestAttachmentSet = assignmentRequestAttachmentService.create(assignmentRequest, multipartFiles).stream().collect(Collectors.toSet());
+            return assignmentRequestAttachmentSet;
         } else {
             return Collections.emptySet();
         }
