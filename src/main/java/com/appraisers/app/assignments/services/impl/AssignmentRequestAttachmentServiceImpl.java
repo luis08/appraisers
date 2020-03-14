@@ -7,14 +7,12 @@ import com.appraisers.app.assignments.dto.AssignmentRequestAttachmentSave;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
 import com.appraisers.app.gbuckets.GDrive;
 import com.appraisers.app.gbuckets.GDriveCommonResponse;
-import com.appraisers.app.gmail.GmailBuilderService;
 import com.appraisers.app.gmail.GmailService;
 import com.appraisers.resources.dto.DocumentResponseData;
 import com.appraisers.storage.StorageService;
 import com.appraisers.storage.StoredItemDto;
 import com.appraisers.storage.StoringItemDto;
 import com.appraisers.storage.local.StorageType;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -77,19 +74,24 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
             String identifier = assignmentRequestAttachment.getAssignmentRequest().getIdentifier();
             GDriveCommonResponse uploadFileToGoogleDrive = gDrive.uploadFile(mpf, identifier);
 
-            if (!notifiedFolderCreation) {
-                notifiedFolderCreation = true;
-                emailMessage.add(getFolderCreatedMessage(uploadFileToGoogleDrive.getFolderId()));
-            }
-
-            if (uploadFileToGoogleDrive != null) {
-                assignmentRequestAttachment.setStorageId(uploadFileToGoogleDrive.getId());
-                assignmentRequestAttachments.add(new AssignmentRequestAttachmentSave(assignmentRequestAttachment, getFileUploadMessage(assignmentRequestAttachment)));
+            if(uploadFileToGoogleDrive != null) {
+                if (!notifiedFolderCreation) {
+                    notifiedFolderCreation = true;
+                    emailMessage.add(getFolderCreatedMessage(uploadFileToGoogleDrive.getFolderId()));
+                    assignmentRequestAttachment.setStorageId(uploadFileToGoogleDrive.getId());
+                    assignmentRequestAttachments.add(new AssignmentRequestAttachmentSave(assignmentRequestAttachment, getFileUploadMessage(assignmentRequestAttachment)));
+                } else {
+                    emailMessage.add(getFailedUploadMessage(assignmentRequestAttachment));
+                }
             } else {
-                emailMessage.add(getFailedUploadMessage(assignmentRequestAttachment));
+                assignmentRequestAttachments.add(new AssignmentRequestAttachmentSave(null, getGoogleDriveNotAvailable(assignmentRequestAttachment, identifier)));
             }
         }
         return assignmentRequestAttachments;
+    }
+
+    private String getGoogleDriveNotAvailable(AssignmentRequestAttachment assignmentRequestAttachment, String identifier) {
+        return String.format("Google Drive not available for [%s] on Assignment Request [%s]", assignmentRequestAttachment.getOriginalFileName(), identifier);
     }
 
     private String getFileUploadMessage(AssignmentRequestAttachment assignmentRequestAttachment) {

@@ -1,12 +1,12 @@
 package com.appraisers.app.gbuckets;
 
 
+import com.appraisers.app.assignments.dto.GoogleUploadItemDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 
 @Service
@@ -55,7 +54,7 @@ public class GDrive {
             } else {
                 return parsedResponse.getAccessToken();
             }
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }
@@ -77,7 +76,7 @@ public class GDrive {
             ResponseEntity<GDriveCommonResponse> response = this.restTemplate.postForEntity("https://www.googleapis.com/drive/v3/files", entity, GDriveCommonResponse.class);
 
             return response.getBody();
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }
@@ -92,16 +91,16 @@ public class GDrive {
             ResponseEntity<GDriveListFilesResponse> response = this.restTemplate.exchange("https://www.googleapis.com/drive/v3/files", HttpMethod.GET, entity, GDriveListFilesResponse.class);
 
             return response.getBody().getFiles();
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }
 
     public GDriveCommonResponse doesFolderExist(String folderName) {
         GDriveCommonResponse[] driveEntities = this.listFiles();
-        if(driveEntities != null) {
+        if (driveEntities != null) {
             boolean exists = Arrays.stream(driveEntities).anyMatch(entity -> entity.getName().equals(folderName) && entity.getMimeType().equals(FOLDER_MIMETYPE));
-            if(exists) {
+            if (exists) {
                 return Arrays.stream(driveEntities).filter(entity -> entity.getName().equals(folderName) && entity.getMimeType().equals(FOLDER_MIMETYPE)).findFirst().get();
             }
         }
@@ -110,14 +109,26 @@ public class GDrive {
 
     public GDriveCommonResponse uploadFile(MultipartFile multipartFile, String folderName) throws IOException {
         try {
+            String contentType = multipartFile.getContentType();
+            String originalFilename = multipartFile.getOriginalFilename();
+            byte[] byteArray = multipartFile.getBytes();
+            String fileName = multipartFile.getName();
+            GoogleUploadItemDto googleUploadItemDto = new GoogleUploadItemDto(contentType, originalFilename, fileName, folderName, byteArray);
+            return uploadFile(googleUploadItemDto);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 
-        GDriveCommonResponse folderId = doesFolderExist(folderName);
+    @Nullable
+    public GDriveCommonResponse uploadFile(GoogleUploadItemDto googleUploadItemDto) throws JsonProcessingException {
+        GDriveCommonResponse folderId = doesFolderExist(googleUploadItemDto.getFolderName());
 
-        if(folderId == null) {
-            folderId = createFolder(folderName);
+        if (folderId == null) {
+            folderId = createFolder(googleUploadItemDto.getFolderName());
         }
 
-        if(folderId != null) {
+        if (folderId != null) {
 
             ObjectMapper mapper = new ObjectMapper();
             HttpHeaders headers = new HttpHeaders();
@@ -126,8 +137,9 @@ public class GDrive {
             headers.setAccept(Arrays.asList(new MediaType[]{MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON_UTF8, MediaType.APPLICATION_OCTET_STREAM}));
 
             GDriveMetadataRequest metadata = new GDriveMetadataRequest();
-            metadata.setMimeType(multipartFile.getContentType());
-            metadata.setName(multipartFile.getOriginalFilename());
+
+            metadata.setMimeType(googleUploadItemDto.getContentType());
+            metadata.setName(googleUploadItemDto.getOriginalFilename());
             metadata.setParents(new String[]{folderId.getId()});
 
             MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
@@ -138,10 +150,10 @@ public class GDrive {
 
             map.set("metadata", metadataEntity);
 
-            ByteArrayResource contentsAsResource = new ByteArrayResource(multipartFile.getBytes()){
+            ByteArrayResource contentsAsResource = new ByteArrayResource(googleUploadItemDto.getByteArray()) {
                 @Override
-                public String getFilename(){
-                    return multipartFile.getName();
+                public String getFilename() {
+                    return googleUploadItemDto.getFileName();
                 }
             };
             map.set("file", contentsAsResource);
@@ -154,11 +166,6 @@ public class GDrive {
             body.setFolderId(folderId.getId());
             return body;
         }
-
-        }catch (Exception ex) {
-            return null;
-        }
-
         return null;
     }
 

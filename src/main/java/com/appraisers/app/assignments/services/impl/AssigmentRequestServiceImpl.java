@@ -2,14 +2,19 @@ package com.appraisers.app.assignments.services.impl;
 
 import com.appraisers.app.assignments.data.AssignmentRequestRepository;
 import com.appraisers.app.assignments.domain.AssignmentRequest;
+import com.appraisers.app.assignments.domain.AssignmentRequestAttachment;
 import com.appraisers.app.assignments.dto.AssignmentRequestAttachmentSave;
 import com.appraisers.app.assignments.dto.AssignmentRequestDto;
+import com.appraisers.app.assignments.dto.GoogleUploadItemDto;
 import com.appraisers.app.assignments.services.AssignmentRequestAttachmentService;
 import com.appraisers.app.assignments.services.AssignmentRequestDocumentService;
 import com.appraisers.app.assignments.services.AssignmentRequestService;
 import com.appraisers.app.assignments.utils.AssignmentUtils;
+import com.appraisers.app.gbuckets.GDrive;
+import com.appraisers.app.gbuckets.GDriveCommonResponse;
 import com.appraisers.app.gmail.GmailBuilderService;
 import com.appraisers.app.gmail.GmailService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -30,6 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Service
 public class AssigmentRequestServiceImpl implements AssignmentRequestService {
     public static final String LINE_SEPARATOR = System.lineSeparator();
+    public static final String INVALID_RESPONSE = "Unable to upload text document with the entire Assignment Request";
 
     @Value("${com.appraisers.app.assignmentRequest.notificationEmail")
     private String notificationEmail;
@@ -42,8 +48,14 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
 
     @Autowired
     private AssignmentRequestRepository assignmentRequestRepository;
-    public static final String IDENTIFIER_MASK = "%s%02d%02d-%03d";
+
+    @Autowired
     private AssignmentRequestDocumentService assignmentRequestDocumentService;
+
+    @Autowired
+    private GDrive googleDrive;
+
+    public static final String IDENTIFIER_MASK = "%s%02d%02d-%03d";
 
     @Override
     public AssignmentRequest create(AssignmentRequestDto dto) throws Exception {
@@ -54,21 +66,43 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
 
         assignmentRequestRepository.save(assignmentRequest);
         Set<AssignmentRequestAttachmentSave> attachments = createAttachments(dto, assignmentRequest);
-        assignmentRequest.setAttachments(attachments.stream().map(AssignmentRequestAttachmentSave::getAssignmentRequestAttachment).collect(Collectors.toSet()));
+        Set<AssignmentRequestAttachment> validAttachments = attachments.stream().map(AssignmentRequestAttachmentSave::getAssignmentRequestAttachment).filter(Objects::nonNull).collect(Collectors.toSet());
+        assignmentRequest.setAttachments(validAttachments);
 
         AssignmentRequest finalRequest = assignmentRequestRepository.getOne(assignmentRequest.getId());
+
         String document = assignmentRequestDocumentService.getDocument(finalRequest)
                 .concat(LINE_SEPARATOR)
                 .concat(attachments.stream()
                         .map(AssignmentRequestAttachmentSave::getSaveMessage)
+                        .filter(Objects::nonNull)
                         .collect(Collectors.joining(LINE_SEPARATOR)));
-        sendEmail(document);
+        String documentSavedMessage = getDocumentUploadedMessage(document, assignmentRequest);
+        document = document.concat(LINE_SEPARATOR)
+                .concat(LINE_SEPARATOR)
+                .concat(documentSavedMessage);
+        sendEmail(document, assignmentRequest.getIdentifier());
 
         return finalRequest;
     }
 
+    private String getDocumentUploadedMessage(String document, AssignmentRequest assignmentRequest) {
+        String fileName = assignmentRequest.getIdentifier().concat(".txt");
+        try {
+            GoogleUploadItemDto googleUploadItemDto = new GoogleUploadItemDto("text/plain", fileName, fileName, assignmentRequest.getIdentifier(), document.getBytes());
+            GDriveCommonResponse gDriveCommonResponse = googleDrive.uploadFile(googleUploadItemDto);
+            if(Objects.isNull(gDriveCommonResponse)){
+                return INVALID_RESPONSE;
+            } else {
+                return Optional.ofNullable(gDriveCommonResponse.getId()).orElse(INVALID_RESPONSE);
+            }
+        } catch (JsonProcessingException e) {
+            return INVALID_RESPONSE;
+        }
+    }
+
     private void sendEmail(String document, String identifier) {
-        String subject = String.format("Assignment Request Recieved %s", identifier);
+        String subject = String.format("Assignment Request Received %s", identifier);
         new GmailBuilderService()
                 .setTo(notificationEmail)
                 .setSubject(subject)
