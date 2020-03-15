@@ -37,7 +37,7 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
     public static final String LINE_SEPARATOR = System.lineSeparator();
     public static final String INVALID_RESPONSE = "Unable to upload text document with the entire Assignment Request";
 
-    @Value("${com.appraisers.app.assignmentRequest.notificationEmail")
+    @Value("${com.appraisers.app.assignmentRequest.notificationEmail}")
     private String notificationEmail;
 
     @Autowired
