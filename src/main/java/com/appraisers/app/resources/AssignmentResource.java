@@ -3,14 +3,13 @@ package com.appraisers.app.resources;
 import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.dto.AssignmentRequestDto;
 import com.appraisers.app.assignments.dto.AssignmentRequestProjection;
+import com.appraisers.app.assignments.services.AssignmentRequestDocumentService;
 import com.appraisers.app.assignments.services.AssignmentRequestService;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,11 +24,20 @@ public class AssignmentResource {
         this.assignmentRequestService = assignmentRequestService;
     }
 
+    @Autowired
+    private AssignmentRequestDocumentService assignmentRequestDocumentService;
+
     @PostMapping(value = "/assignment/create", consumes = {"multipart/form-data"})
     public ResponseEntity<AssignmentRequestProjection> saveSplit(@RequestPart(value = "assignmentRequest") AssignmentRequestDto assignmentRequest,
                                                                  @RequestPart("files") MultipartFile[] files) {
         assignmentRequest.setUploadingFiles(files);
         return doSave(assignmentRequest);
+    }
+
+    @GetMapping("/assignment/{id}/text")
+    public String getForm(@PathVariable Long id) {
+        AssignmentRequest assignmentRequest = assignmentRequestService.get(id);
+        return assignmentRequestDocumentService.getDocument(assignmentRequest);
     }
 
     @GetMapping("/assignments")

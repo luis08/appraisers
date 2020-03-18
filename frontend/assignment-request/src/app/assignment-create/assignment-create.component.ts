@@ -28,8 +28,6 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.uploadSelectionService.getFiles().subscribe(files => {
-      console.log('Received');
-      console.log(files);
       if(files) {
         this.files = files;
       } else {
