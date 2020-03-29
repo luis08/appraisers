@@ -1,9 +1,10 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {AssignmentRequest} from "../assignment-request"
+import {AssignmentRequest} from '../assignment-request';
 import {AssignmentService} from '../assignment.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
-import {UploadSelectionService} from "../upload-selection.service";
+import {UploadSelectionService} from '../upload-selection.service';
+import {AssignmentStateService} from '../assignment-state.service';
 
 @Component({
   selector: 'app-assignment-create',
@@ -15,20 +16,21 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   states: string[];
   files: any[];
-  nextFileId: number = -1;
-  isNew: boolean = true;
+  nextFileId = -1;
+  isNew = true;
   assignmentRequest: AssignmentRequest;
-  additionalFilesValue: string = "";
+  additionalFilesValue = '';
 
-  constructor(private assigmentService: AssignmentService,
-              private formBuilder: FormBuilder,
-              private ref: ChangeDetectorRef,
-              private uploadSelectionService: UploadSelectionService) {
+    constructor(private assigmentService: AssignmentService,
+                private formBuilder: FormBuilder,
+                private ref: ChangeDetectorRef,
+                private uploadSelectionService: UploadSelectionService,
+                private assignmentStateService: AssignmentStateService) {
   }
 
   ngOnInit() {
     this.subscription = this.uploadSelectionService.getFiles().subscribe(files => {
-      if(files) {
+      if (files) {
         this.files = files;
       } else {
         this.files = [];
@@ -98,37 +100,33 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  _getIt(): AssignmentRequest {
-    let assignmentRequest: AssignmentRequest = this.registerForm.value;
-
-    return null;
-  }
-
   _getAssignmentRequest() {
-    let assignmentRequest: AssignmentRequest = this.registerForm.value;
+    const assignmentRequest: AssignmentRequest = this.registerForm.value;
     assignmentRequest.uploadingFiles = this.files;
     return assignmentRequest;
   }
 
   create() {
-    let assignmentRequest: AssignmentRequest = this._getAssignmentRequest();
+    const assignmentRequest: AssignmentRequest = this._getAssignmentRequest();
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
         this._resetForm();
         this.uploadSelectionService.clearFiles();
+        this.assignmentStateService.submittedSuccessfully();
+
       });
   }
 
   removeFile(file) {
     if (file && file.id) {
-      let newFiles = this.files.filter(f => f.id != file.id);
+      const newFiles = this.files.filter(f => f.id !== file.id);
       this.files = newFiles;
     }
   }
 
   onFileSelectionChange(event) {
     if (event.target && event.target.files.length) {
-      for (let f of event.target.files) {
+      for (const f of event.target.files) {
         f.id = this.nextFileId--;
         this.files.push(f);
       }
@@ -137,7 +135,7 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
 
   onAdditionalFilesSelectionChange(event) {
     if (event.target && event.target.files.length) {
-      for (let f of event.target.files) {
+      for (const f of event.target.files) {
         f.id = this.nextFileId--;
         this.files.push(f);
       }
@@ -149,53 +147,53 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
    */
   populate() {
     this.registerForm.setValue({
-      accountNumber: "accountNumber_val",
-      adjusterEmail: "adjuster@nowhere.com",
-      adjusterFirstName: "adjusterFirstName_val",
-      adjusterLastName: "adjusterLastName_val",
-      adjusterPhone: "305-111-1111",
-      claimantAddress1: "claimantAddress1_val",
-      claimantAddress2: "claimantAddress2_val",
-      claimantCity: "claimantCity_val",
-      claimantEmail: "claimant@nowhere.com",
-      claimantFirst: "claimantFirst_val",
-      claimantLast: "claimantLast_val",
-      claimantPhone: "305-111-1112",
-      claimantState: "CO",
-      claimantZip: "22222",
-      claimNumber: "claimNumber_val",
-      companyAddress1: "companyAddress1_val",
-      companyAddress2: "companyAddress2_val",
-      companyName: "companyName_val",
-      companyCity: "companyCity_val",
-      companyState: "CT",
-      companyZip: "33333",
-      dateOfLoss: "12/01/2019",
-      deductibleAmount: "100",
-      insuredClaimantSameAsOwner: "FALSE",
-      insuredOrClaimant: "Claimant",
-      isRepairFacility: "TRUE",
-      license: "license_val",
-      licenseState: "AK",
-      locationState: "AZ",
-      lossDescription: "lossDescription_val",
-      make: "make_val",
-      model: "model_val",
-      policyNumber: "policyNumber_val",
-      provideAcvEvaluation: "TRUE",
-      providesCopyOfAppraisal: "FALSE",
-      requestSalvageBids: "TRUE",
-      typeOfLoss: "typeOfLoss_val",
-      valuation: "valuation_val",
-      valuationMethod: "valuationMethod_val",
-      vehicleLocationAddress1: "vehicleLocationAddress1_val",
-      vehicleLocationAddress2: "vehicleLocationAddress2_val",
-      vehicleLocationCity: "vehicleLocationCity_val",
-      vehicleLocationName: "vehicleLocationName_val",
-      vehicleLocationPhone: "vehicleLocationPhone_val",
-      vehicleLocationState: "CA",
-      vehicleLocationZip: "44444",
-      vin: "vin_val",
+      adjusterEmail: 'adjuster@nowhere.com',
+      accountNumber: 'accountNumber_val',
+      adjusterFirstName: 'adjusterFirstName_val',
+      adjusterLastName: 'adjusterLastName_val',
+      adjusterPhone: '305-111-1111',
+      claimantAddress1: 'claimantAddress1_val',
+      claimantAddress2: 'claimantAddress2_val',
+      claimantCity: 'claimantCity_val',
+      claimantEmail: 'claimant@nowhere.com',
+      claimantFirst: 'claimantFirst_val',
+      claimantLast: 'claimantLast_val',
+      claimantPhone: '305-111-1112',
+      claimantState: 'CO',
+      claimantZip: '22222',
+      claimNumber: 'claimNumber_val',
+      companyAddress1: 'companyAddress1_val',
+      companyAddress2: 'companyAddress2_val',
+      companyName: 'companyName_val',
+      companyCity: 'companyCity_val',
+      companyState: 'CT',
+      companyZip: '33333',
+      dateOfLoss: '12/01/2019',
+      deductibleAmount: '100',
+      insuredClaimantSameAsOwner: 'FALSE',
+      insuredOrClaimant: 'Claimant',
+      isRepairFacility: 'TRUE',
+      license: 'license_val',
+      licenseState: 'AK',
+      locationState: 'AZ',
+      lossDescription: 'lossDescription_val',
+      make: 'make_val',
+      model: 'model_val',
+      policyNumber: 'policyNumber_val',
+      provideAcvEvaluation: 'TRUE',
+      providesCopyOfAppraisal: 'FALSE',
+      requestSalvageBids: 'TRUE',
+      typeOfLoss: 'typeOfLoss_val',
+      valuation: 'valuation_val',
+      valuationMethod: 'valuationMethod_val',
+      vehicleLocationAddress1: 'vehicleLocationAddress1_val',
+      vehicleLocationAddress2: 'vehicleLocationAddress2_val',
+      vehicleLocationCity: 'vehicleLocationCity_val',
+      vehicleLocationName: 'vehicleLocationName_val',
+      vehicleLocationPhone: 'vehicleLocationPhone_val',
+      vehicleLocationState: 'CA',
+      vehicleLocationZip: '44444',
+      vin: 'vin_val',
       year: 1991
     });
   }

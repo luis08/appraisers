@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {AssignmentState} from './assignment-state.service'
 
 @Component({
   selector: 'app-root',
@@ -10,6 +10,17 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 export class AppComponent {
   title = 'Test secure';
+  state: AssignmentState = AssignmentState.Full;
 
+  showFull() {
+    return this.state === AssignmentState.Full;
+  }
 
+  showMultiUpload() {
+    return this.state === AssignmentState.MultiUpload;
+  }
+
+  showSuccess() {
+    return this.state === AssignmentState.SuccessfulSubmission;
+  }
 }
