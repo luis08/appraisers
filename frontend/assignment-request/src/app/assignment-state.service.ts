@@ -18,7 +18,6 @@ export class AssignmentStateService {
 
   submittedSuccessfully() {
     this.state.next(AssignmentState.SuccessfulSubmission);
-    console.log('The state is: ' + this.state);
   }
 
   reset() {

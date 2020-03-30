@@ -15,11 +15,7 @@ export class MultiUploadComponent implements OnInit {
   constructor(private uploadSelectionService: UploadSelectionService, private assignmentStateService: AssignmentStateService) {
   }
 
-  addToupload(file) {
-    this.files.push(file);
-  }
-
-
+  
   onClick() {
     const fileUpload = this.fileUpload.nativeElement;
     fileUpload.onchange = () => {
@@ -39,6 +35,7 @@ export class MultiUploadComponent implements OnInit {
   setFiles(): void {
     this.uploadSelectionService.setFiles(this.files);
   }
+
   removeFile(file) {
     const withoutFile = this.files.filter(f => f.id !== file.id);
     this.files = withoutFile;

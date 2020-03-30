@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./successful-submission.component.css']
 })
 export class SuccessfulSubmissionComponent implements OnInit {
+  assignmentRequestIdentifier: string;
 
   constructor() { }
 
