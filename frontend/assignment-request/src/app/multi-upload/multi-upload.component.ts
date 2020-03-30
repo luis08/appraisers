@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {UploadSelectionService} from "../upload-selection.service";
+import {AssignmentStateService} from "../assignment-state.service";
 
 @Component({
   selector: 'app-multi-upload',
@@ -7,23 +8,18 @@ import {UploadSelectionService} from "../upload-selection.service";
   styleUrls: ['./multi-upload.component.css']
 })
 export class MultiUploadComponent implements OnInit {
-  @ViewChild("fileUpload", {static: false}) fileUpload: ElementRef;
+  @ViewChild('fileUpload', {static: false}) fileUpload: ElementRef;
   files = [];
-  nextid: number = 0;
+  nextid = 0;
 
-  constructor(private uploadSelectionService: UploadSelectionService) {
+  constructor(private uploadSelectionService: UploadSelectionService, private assignmentStateService: AssignmentStateService) {
   }
 
-  addToupload(file) {
-    this.files.push(file);
-  }
-
-
+  
   onClick() {
     const fileUpload = this.fileUpload.nativeElement;
     fileUpload.onchange = () => {
-      for (let index = 0; index < fileUpload.files.length; index++) {
-        const file = fileUpload.files[index];
+      for (const file of fileUpload.files) {
         this.files.push({
           id: this.nextid++,
           data: file,
@@ -36,11 +32,12 @@ export class MultiUploadComponent implements OnInit {
     fileUpload.click();
     console.log('called click');
   }
-  setFiles():void{
+  setFiles(): void {
     this.uploadSelectionService.setFiles(this.files);
   }
+
   removeFile(file) {
-    let withoutFile = this.files.filter(f => f.id !== file.id);
+    const withoutFile = this.files.filter(f => f.id !== file.id);
     this.files = withoutFile;
     this.setFiles();
   }

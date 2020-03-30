@@ -1,8 +1,9 @@
 import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Subscription} from "rxjs";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AssignmentRequest} from "../assignment-request";
-import {AssignmentService} from "../assignment.service";
+import {Subscription} from 'rxjs';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AssignmentRequest} from '../assignment-request';
+import {AssignmentService} from '../assignment.service';
+import {AssignmentStateService} from '../assignment-state.service';
 
 @Component({
   selector: 'app-required-uploads-assignment',
@@ -22,14 +23,15 @@ export class RequiredUploadsAssignmentComponent implements OnInit {
   registerForm: FormGroup;
   states: string[];
   files: any[];
-  nextFileId: number = -1;
-  isNew: boolean = true;
+  nextFileId = -1;
+  isNew = true;
   assignmentRequest: AssignmentRequest;
-  additionalFilesValue: string = "";
+  additionalFilesValue = '';
 
   constructor(private assigmentService: AssignmentService,
               private formBuilder: FormBuilder,
-              private ref: ChangeDetectorRef) {
+              private ref: ChangeDetectorRef,
+              private assignmentStateService: AssignmentStateService) {
   }
 
   ngOnInit(): void {
@@ -38,13 +40,14 @@ export class RequiredUploadsAssignmentComponent implements OnInit {
 
   create() {
     this.setupAttachments();
-    let assignmentRequest: AssignmentRequest = this.registerForm.value;
+    const assignmentRequest: AssignmentRequest = this.registerForm.value;
     assignmentRequest.uploadingFiles = this.files;
     console.log('saving!');
     console.log(assignmentRequest);
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
         this.resetForm();
+        this.assignmentStateService.submittedSuccessfully();
       });
   }
 
