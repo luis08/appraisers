@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {AssignmentStateService} from "../assignment-state.service";
+import {AssignmentRequest} from "../assignment-request";
 
 @Component({
   selector: 'app-successful-submission',
@@ -6,11 +8,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./successful-submission.component.css']
 })
 export class SuccessfulSubmissionComponent implements OnInit {
-  assignmentRequestIdentifier: string;
+  assignmentRequest: AssignmentRequest;
 
-  constructor() { }
+  constructor(private assignmentStateService: AssignmentStateService) { }
 
   ngOnInit() {
+    this.assignmentStateService.sharedStateBucket.subscribe(bucket => this.assignmentRequest = bucket.assignmentRequest);
   }
 
 }

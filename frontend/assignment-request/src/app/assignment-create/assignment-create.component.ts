@@ -29,6 +29,7 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.assignmentStateService.sharedStateBucket.subscribe(bucket => this.assignmentRequest = bucket.assignmentRequest);
     this.subscription = this.uploadSelectionService.getFiles().subscribe(files => {
       if (files) {
         this.files = files;
@@ -110,17 +111,15 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
     const assignmentRequest: AssignmentRequest = this._getAssignmentRequest();
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
+        this.assignmentStateService.successfullySubmitted(ar);
         this._resetForm();
         this.uploadSelectionService.clearFiles();
-        this.assignmentStateService.submittedSuccessfully();
-
       });
   }
 
   removeFile(file) {
     if (file && file.id) {
-      const newFiles = this.files.filter(f => f.id !== file.id);
-      this.files = newFiles;
+      this.files = this.files.filter(f => f.id !== file.id);
     }
   }
 

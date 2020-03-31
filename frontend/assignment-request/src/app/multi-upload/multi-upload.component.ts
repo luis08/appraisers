@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {UploadSelectionService} from "../upload-selection.service";
 import {AssignmentStateService} from "../assignment-state.service";
+import {AssignmentRequest} from "../assignment-request";
 
 @Component({
   selector: 'app-multi-upload',
@@ -11,11 +12,13 @@ export class MultiUploadComponent implements OnInit {
   @ViewChild('fileUpload', {static: false}) fileUpload: ElementRef;
   files = [];
   nextid = 0;
+  assignmentRequest: AssignmentRequest;
 
-  constructor(private uploadSelectionService: UploadSelectionService, private assignmentStateService: AssignmentStateService) {
+  constructor(private uploadSelectionService: UploadSelectionService,
+              private assignmentStateService: AssignmentStateService) {
   }
 
-  
+
   onClick() {
     const fileUpload = this.fileUpload.nativeElement;
     fileUpload.onchange = () => {
@@ -37,11 +40,11 @@ export class MultiUploadComponent implements OnInit {
   }
 
   removeFile(file) {
-    const withoutFile = this.files.filter(f => f.id !== file.id);
-    this.files = withoutFile;
+    this.files = this.files.filter(f => f.id !== file.id);
     this.setFiles();
   }
 
   ngOnInit() {
+    this.assignmentStateService.sharedStateBucket.subscribe(bucket => this.assignmentRequest = bucket.assignmentRequest);
   }
 }

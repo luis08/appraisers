@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {AssignmentRequest} from '../assignment-request';
 import {AssignmentService} from '../assignment.service';
 import {AssignmentStateService} from '../assignment-state.service';
@@ -35,7 +35,9 @@ export class RequiredUploadsAssignmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.assignmentStateService.sharedStateBucket.subscribe(bucket => this.assignmentRequest = bucket.assignmentRequest);
     this.resetForm();
+
   }
 
   create() {
@@ -46,8 +48,8 @@ export class RequiredUploadsAssignmentComponent implements OnInit {
     console.log(assignmentRequest);
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
-        this.resetForm();
-        this.assignmentStateService.submittedSuccessfully();
+        this.assignmentStateService.successfullySubmitted(ar);
+        this.resetForm()
       });
   }
 

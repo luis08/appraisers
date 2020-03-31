@@ -26,6 +26,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.assignmentStateService.sharedState.subscribe(state => this.state = state);
+    this.assignmentStateService.sharedStateBucket.subscribe(bucket => this.state = bucket.assignmentState);
   }
 }
