@@ -11,7 +11,7 @@ export class AssignmentStateService implements OnInit {
   constructor() {
   }
 
-  private stateBucketSource: BehaviorSubject<AssignmentStateBucket>;
+  private stateBucketSource: BehaviorSubject<AssignmentStateBucket> = new BehaviorSubject<AssignmentStateBucket>(new AssignmentStateBucket());
   sharedStateBucket = this.stateBucketSource.asObservable();
 
   _initializeBucket() {
