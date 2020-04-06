@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {AssignmentStateBucket} from "./AssignmentStateBucket";
 import {AssignmentRequest} from "./assignment-request";
@@ -6,43 +6,51 @@ import {AssignmentRequest} from "./assignment-request";
 @Injectable({
   providedIn: 'root'
 })
-export class AssignmentStateService implements OnInit {
+export class AssignmentStateService {
+  private assignmentStateBucket = new AssignmentStateBucket();
+  private stateBucketSource: BehaviorSubject<AssignmentStateBucket> = new BehaviorSubject(this.assignmentStateBucket);
 
   constructor() {
+    this.assignmentStateBucket.assignmentState = AssignmentState.Full;
   }
 
-  private stateBucketSource: BehaviorSubject<AssignmentStateBucket> = new BehaviorSubject<AssignmentStateBucket>(new AssignmentStateBucket());
   sharedStateBucket = this.stateBucketSource.asObservable();
 
-  _initializeBucket() {
-    let stateBucket = new AssignmentStateBucket();
-    stateBucket.assignmentState = AssignmentState.Full;
-    this.stateBucketSource = new BehaviorSubject(stateBucket);
-  }
-
   setFull() {
-    this._initializeBucket();
+    this.assignmentStateBucket = new AssignmentStateBucket();
+    this.assignmentStateBucket.assignmentState = AssignmentState.Full;
+    this.stateBucketSource.next(this.assignmentStateBucket);
   }
 
   setMultiUpload() {
-    let stateBucket = new AssignmentStateBucket();
+    const stateBucket = new AssignmentStateBucket();
     stateBucket.assignmentState = AssignmentState.MultiUpload;
     this.stateBucketSource = new BehaviorSubject(stateBucket);
   }
 
-  successfullySubmitted(assginmentRequest: AssignmentRequest) :void {
-    let bucket = new AssignmentStateBucket();
+  successfullySubmitted(assginmentRequest: AssignmentRequest): void {
+    const bucket = new AssignmentStateBucket();
     bucket.assignmentState = AssignmentState.SuccessfulSubmission;
     bucket.assignmentRequest = assginmentRequest;
     this.stateBucketSource.next(bucket);
   }
 
-  reset() {
-    this._initializeBucket();
+  reset(url: string) {
+    const bucket = new AssignmentStateBucket();
+    bucket.assignmentState = this.getState(url);
+    this.stateBucketSource.next(bucket);
   }
 
-  ngOnInit(): void {
-    this._initializeBucket();
+  getState(urlPart: string): AssignmentState {
+    if (!urlPart) {
+      return null;
+    } else if (urlPart.toLocaleLowerCase() === 'multi-upload') {
+      return AssignmentState.MultiUpload;
+    } else if(urlPart.toLocaleLowerCase() === 'full') {
+      return AssignmentState.Full;
+    } else {
+      return null;
+    }
   }
 }
 
