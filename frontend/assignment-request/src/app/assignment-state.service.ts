@@ -35,9 +35,16 @@ export class AssignmentStateService {
     this.stateBucketSource.next(bucket);
   }
 
-  reset(url: string) {
+  reset(fullUrl: string) {
+    const pathArray = fullUrl.split('/');
+    pathArray.forEach(a => console.log(a));
+    const statesFound = pathArray.map(a => this.getState(a)).filter(s => s !== null);
     const bucket = new AssignmentStateBucket();
-    bucket.assignmentState = this.getState(url);
+    if (statesFound && statesFound.length === 0) {
+      bucket.assignmentState = statesFound[0];
+    } else {
+      bucket.assignmentState = AssignmentState.Full;
+    }
     this.stateBucketSource.next(bucket);
   }
 

@@ -16,15 +16,11 @@ export class SuccessfulSubmissionComponent implements OnInit {
 
   ngOnInit() {
     this.assignmentStateService.sharedStateBucket.subscribe(bucket => this.assignmentRequestBucket = bucket);
-    const pathArray = window.location.pathname.split('/');
-    pathArray.forEach(a => console.log(a));
-    const statesFound = pathArray.filter(a => this.assignmentStateService.getState(a) !== null);
-    if (statesFound && statesFound.length > 0) {
-      this.originalState = statesFound[0];
-    }
+    this.originalState = window.location.href;
   }
 
   reset(): void {
     this.assignmentStateService.reset(this.originalState);
+    window.location.href = this.originalState;
   }
 }
