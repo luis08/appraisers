@@ -25,7 +25,20 @@ export class AppComponent implements OnInit {
     return this.state === AssignmentState.SuccessfulSubmission;
   }
 
+  /**
+   * We need the url into this component to be something like
+   * something.com/assignment-request/index.html?full
+   * or
+   * something.com/assignment-request/index.html?multi-upload
+   *
+   * We are not using routing so it's a mission.
+   */
+
   ngOnInit() {
+    //this should get us the state from the service or null
+    let newState = this.assignmentStateService.getState(window.location.href);
+    this.state = newState || AssignmentState.Full;
+
     this.assignmentStateService.sharedStateBucket.subscribe(bucket => this.state = bucket.assignmentState);
   }
 }
