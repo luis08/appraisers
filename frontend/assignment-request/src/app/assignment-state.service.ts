@@ -48,7 +48,20 @@ export class AssignmentStateService {
     this.stateBucketSource.next(bucket);
   }
 
-  getState(urlPart: string): AssignmentState {
+  getState(fullUrl: string): AssignmentState {
+    if(!fullUrl || ! fullUrl.length) {
+      return AssignmentState.MultiUpload;
+    }
+    let urlArr = fullUrl.split('?');
+    if(urlArr.length > 1) {
+      return this.getStateFromUrl(urlArr[1]);
+    } else {
+      //This doesn't make much sense, but maybe... god knows
+      return this.getStateFromUrl(urlArr[0]);
+    }
+  }
+
+  getStateFromUrl(urlPart: string) {
     if (!urlPart) {
       return null;
     } else if (urlPart.toLocaleLowerCase() === 'multi-upload') {
