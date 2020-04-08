@@ -39,6 +39,6 @@ export class AppComponent implements OnInit {
     let newState = this.assignmentStateService.getState(window.location.href);
     this.state = newState || AssignmentState.Full;
 
-    this.assignmentStateService.sharedStateBucket.subscribe(bucket => this.state = bucket.assignmentState);
+    this.assignmentStateService.sharedStateBucket.subscribe(bucket => AssignmentStateService.redirectSetters(this.state, this.assignmentStateService)) ;
   }
 }

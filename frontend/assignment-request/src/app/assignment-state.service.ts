@@ -72,6 +72,17 @@ export class AssignmentStateService {
       return null;
     }
   }
+
+  static redirectSetters(state: AssignmentState, service: AssignmentStateService) {
+    switch (state) {
+      case AssignmentState.Full:
+        service.setFull();
+        return;
+      case AssignmentState.MultiUpload:
+        service.setMultiUpload();
+        return;
+    }
+  }
 }
 
 export enum AssignmentState {
