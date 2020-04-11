@@ -1,16 +1,16 @@
 import {Component, OnInit, SimpleChanges} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {AssignmentRequest} from "../../../assignment-request/src/app/assignment-request";
+import {HttpClient} from '@angular/common/http';
+import {AssignmentRequest} from '../../../assignment-request/src/app/assignment-request';
 import paginate from 'jw-paginate';
 
-//TODO: Remove the garbage of the original pager
+// TODO: Remove the garbage of the original pager
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit {
   items = [];
-  baseUrl = "/assignments";
+  baseUrl = '/assignments';
   pager = {
     pageNumber: 1, pageSize: 10,
     currentPage: [],
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
     pageLinkDisplayCount: 10,
     totalElements: 1
   };
-  jwPager:any = {};
+  jwPager: any = {};
   assignmentRequests: AssignmentRequest[];
   assignmentRequest: AssignmentRequest;
 
@@ -32,8 +32,8 @@ export class AppComponent implements OnInit {
   }
 
   getAppraisals() {
-    let size = this.pager.pageSize;
-    let pageNumber = this.pager.pageNumber - 1;
+    const size = this.pager.pageSize;
+    const pageNumber = this.pager.pageNumber - 1;
     this.http.get(this.baseUrl + '?page=' + pageNumber + '&size=' + size).toPromise()
       .then((response: any) => {
         this.assignmentRequests = response.content;
@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     // an example array of 150 items to be paged
     this.items = Array(150).fill(0).map((x, i) => ({id: (i + 1), name: `Item ${i + 1}`}));
-    //https://www.baeldung.com/pagination-with-a-spring-rest-api-and-an-angularjs-table
+    // https://www.baeldung.com/pagination-with-a-spring-rest-api-and-an-angularjs-table
     this.getAppraisals();
   }
 
