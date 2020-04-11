@@ -1,45 +1,43 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {AssignmentStateBucket} from "./AssignmentStateBucket";
-import {AssignmentRequest} from "./assignment-request";
+import {AssignmentStateBucket} from './AssignmentStateBucket';
+import {AssignmentRequest} from './assignment-request';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssignmentStateService {
-  private assignmentStateBucket = new AssignmentStateBucket();
-  private stateBucketSource: BehaviorSubject<AssignmentStateBucket> = new BehaviorSubject(this.assignmentStateBucket);
 
   constructor() {
-    this.assignmentStateBucket.assignmentState = AssignmentState.Full;
   }
+
+  private stateBucketSource: BehaviorSubject<AssignmentStateBucket> =
+    new BehaviorSubject(new AssignmentStateBucket(AssignmentState.Full, null));
 
   sharedStateBucket = this.stateBucketSource.asObservable();
 
+  setSuccessful(): void {
+    this.stateBucketSource.getValue().assignmentState = AssignmentState.SuccessfulSubmission;
+  }
+
   setFull() {
-    this.assignmentStateBucket = new AssignmentStateBucket();
-    this.assignmentStateBucket.assignmentState = AssignmentState.Full;
-    this.stateBucketSource.next(this.assignmentStateBucket);
+    const assignmentStateBucket = new AssignmentStateBucket(AssignmentState.Full, null);
+    this.stateBucketSource.next(assignmentStateBucket);
   }
 
   setMultiUpload() {
-    const stateBucket = new AssignmentStateBucket();
-    stateBucket.assignmentState = AssignmentState.MultiUpload;
-    this.stateBucketSource = new BehaviorSubject(stateBucket);
+    this.stateBucketSource = new BehaviorSubject(new AssignmentStateBucket(AssignmentState.MultiUpload, null));
   }
 
-  successfullySubmitted(assginmentRequest: AssignmentRequest): void {
-    const bucket = new AssignmentStateBucket();
-    bucket.assignmentState = AssignmentState.SuccessfulSubmission;
-    bucket.assignmentRequest = assginmentRequest;
+  successfullySubmitted(assignmentRequest: AssignmentRequest): void {
+    const bucket = new AssignmentStateBucket(AssignmentState.SuccessfulSubmission, assignmentRequest);
     this.stateBucketSource.next(bucket);
   }
 
   reset(fullUrl: string) {
     const pathArray = fullUrl.split('/');
-    pathArray.forEach(a => console.log(a));
     const statesFound = pathArray.map(a => this.getState(a)).filter(s => s !== null);
-    const bucket = new AssignmentStateBucket();
+    const bucket = new AssignmentStateBucket(AssignmentState.Full, null);
     if (statesFound && statesFound.length === 0) {
       bucket.assignmentState = statesFound[0];
     } else {
@@ -49,14 +47,14 @@ export class AssignmentStateService {
   }
 
   getState(fullUrl: string): AssignmentState {
-    if(!fullUrl || ! fullUrl.length) {
+    if (!fullUrl || !fullUrl.length) {
       return AssignmentState.MultiUpload;
     }
-    let urlArr = fullUrl.split('?');
-    if(urlArr.length > 1) {
+    const urlArr = fullUrl.split('?');
+    if (urlArr.length > 1) {
       return this.getStateFromUrl(urlArr[1]);
     } else {
-      //This doesn't make much sense, but maybe... god knows
+      // This doesn't make much sense, but maybe... god knows
       return this.getStateFromUrl(urlArr[0]);
     }
   }
@@ -66,22 +64,15 @@ export class AssignmentStateService {
       return null;
     } else if (urlPart.toLocaleLowerCase() === 'multi-upload') {
       return AssignmentState.MultiUpload;
-    } else if(urlPart.toLocaleLowerCase() === 'full') {
+    } else if (urlPart.toLocaleLowerCase() === 'full') {
       return AssignmentState.Full;
     } else {
       return null;
     }
   }
 
-  static redirectSetters(state: AssignmentState, service: AssignmentStateService) {
-    switch (state) {
-      case AssignmentState.Full:
-        service.setFull();
-        return;
-      case AssignmentState.MultiUpload:
-        service.setMultiUpload();
-        return;
-    }
+  setState(state: AssignmentState, assignmentRequest: AssignmentRequest) {
+    this.stateBucketSource.next(new AssignmentStateBucket(state, assignmentRequest));
   }
 }
 

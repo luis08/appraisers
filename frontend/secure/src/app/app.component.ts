@@ -38,7 +38,6 @@ export class AppComponent implements OnInit {
       .then((response: any) => {
         this.assignmentRequests = response.content;
         this._setPager(response);
-        console.log(response);
       });
   }
   ngOnInit() {

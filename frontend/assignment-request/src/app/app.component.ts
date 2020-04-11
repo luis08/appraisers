@@ -9,6 +9,7 @@ import {AssignmentState, AssignmentStateService} from './assignment-state.servic
 export class AppComponent implements OnInit {
   title = 'Test secure';
   state: AssignmentState = AssignmentState.Full;
+  originalState: AssignmentState = AssignmentState.Full;
 
   constructor(private assignmentStateService: AssignmentStateService) {
   }
@@ -35,10 +36,14 @@ export class AppComponent implements OnInit {
    */
 
   ngOnInit() {
-    //this should get us the state from the service or null
-    let newState = this.assignmentStateService.getState(window.location.href);
-    this.state = newState || AssignmentState.Full;
-
-    this.assignmentStateService.sharedStateBucket.subscribe(bucket => AssignmentStateService.redirectSetters(this.state, this.assignmentStateService)) ;
+    this.originalState = this.assignmentStateService.getState(window.location.href) || AssignmentState.Full;
+    if(this.originalState === AssignmentState.SuccessfulSubmission) {
+      this.originalState = AssignmentState.Full;
+    }
+    this.state = this.originalState;
+    this.assignmentStateService.setState(this.state, null);
+    this.assignmentStateService.sharedStateBucket.subscribe(bucket => {
+      this.state = bucket.assignmentState;
+    });
   }
 }

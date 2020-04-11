@@ -33,7 +33,6 @@ export class MultiUploadComponent implements OnInit {
       }
     };
     fileUpload.click();
-    console.log('called click');
   }
   setFiles(): void {
     this.uploadSelectionService.setFiles(this.files);

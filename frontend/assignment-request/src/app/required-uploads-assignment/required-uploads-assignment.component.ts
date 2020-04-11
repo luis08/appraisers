@@ -44,8 +44,6 @@ export class RequiredUploadsAssignmentComponent implements OnInit {
     this.setupAttachments();
     const assignmentRequest: AssignmentRequest = this.registerForm.value;
     assignmentRequest.uploadingFiles = this.files;
-    console.log('saving!');
-    console.log(assignmentRequest);
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
         this.assignmentStateService.successfullySubmitted(ar);
