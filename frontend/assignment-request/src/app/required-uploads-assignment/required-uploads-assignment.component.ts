@@ -11,12 +11,12 @@ import {AssignmentStateService} from '../assignment-state.service';
   styleUrls: ['./required-uploads-assignment.component.css']
 })
 export class RequiredUploadsAssignmentComponent implements OnInit {
-  @ViewChild("fileUpload1", {static: false}) fileUpload1: ElementRef;
-  @ViewChild("fileUpload2", {static: false}) fileUpload2: ElementRef;
-  @ViewChild("fileUpload3", {static: false}) fileUpload3: ElementRef;
-  @ViewChild("fileUpload4", {static: false}) fileUpload4: ElementRef;
-  @ViewChild("fileUpload5", {static: false}) fileUpload5: ElementRef;
-  @ViewChild("fileUpload6", {static: false}) fileUpload6: ElementRef;
+  @ViewChild('fileUpload1', {static: false}) fileUpload1: ElementRef;
+  @ViewChild('fileUpload2', {static: false}) fileUpload2: ElementRef;
+  @ViewChild('fileUpload3', {static: false}) fileUpload3: ElementRef;
+  @ViewChild('fileUpload4', {static: false}) fileUpload4: ElementRef;
+  @ViewChild('fileUpload5', {static: false}) fileUpload5: ElementRef;
+  @ViewChild('fileUpload6', {static: false}) fileUpload6: ElementRef;
 
   fileControls: Array<any>;
   subscription: Subscription;
@@ -49,7 +49,6 @@ export class RequiredUploadsAssignmentComponent implements OnInit {
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
         this.assignmentStateService.successfullySubmitted(ar);
-        this.resetForm()
       });
   }
 
