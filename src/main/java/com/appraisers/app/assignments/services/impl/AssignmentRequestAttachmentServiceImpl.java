@@ -115,7 +115,7 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
             attachment.setSanitizedFileName(storedItemDto.get().getSanitizedFileName());
             attachment.setPath(storedItemDto.get().getSanitizedFileName());
             attachment.setStorageId(storedItemDto.get().getStorageId());
-
+            attachment = repository.save(attachment);
             return attachment;
         } catch (IOException | NotSupportedException e) {
             LOGGER.error(errorMessage, e);
