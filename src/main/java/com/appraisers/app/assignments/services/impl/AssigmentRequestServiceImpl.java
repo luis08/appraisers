@@ -133,14 +133,13 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
     }
 
     private String getIdentifier() {
-        LocalDate start = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate end = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
-        java.util.Date from = Date.from(start.atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
-        java.util.Date to = Date.from(end.plus(Period.ofDays(1)).atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
+        LocalDate today = LocalDate.now();
+        java.util.Date from = Date.from(today.atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
+        java.util.Date to = Date.from(today.plus(Period.ofDays(1)).atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
         int sequence = assignmentRequestRepository.findAllWithDateCreatedBetween(from, to).size();
-        int year = start.getYear();
+        int year = today.getYear();
         String theYear = Integer.toString(year).substring(2);
-        return String.format(IDENTIFIER_MASK, theYear, start.getMonth().getValue(), LocalDate.now().getDayOfMonth(), sequence);
+        return String.format(IDENTIFIER_MASK, theYear, today.getMonth().getValue(), LocalDate.now().getDayOfMonth(), sequence);
     }
 }
 
