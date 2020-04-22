@@ -3,6 +3,7 @@ package com.appraisers.app.assignments.services.impl;
 import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.dto.utils.DtoUtils;
 import com.appraisers.app.assignments.services.AssignmentRequestDocumentService;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,18 @@ public class AssignmentRequestDocumentServiceImpl implements AssignmentRequestDo
                 .append(getLine(bundle, "companyState", assignmentRequest.getCompanyState()))
                 .append(NEW_LINE)
                 .append(getLine(bundle, "companyZip", assignmentRequest.getCompanyZip()))
+                .append(NEW_LINE)
+                .append(NEW_LINE)
+                .append(getLine(bundle, "adjusterFirstName", assignmentRequest.getAdjusterFirstName()))
+                .append(NEW_LINE)
+                .append(NEW_LINE)
+                .append(getLine(bundle, "adjusterLastName", assignmentRequest.getAdjusterLastName()))
+                .append(NEW_LINE)
+                .append(NEW_LINE)
+                .append(getLine(bundle, "adjusterPhone", assignmentRequest.getAdjusterPhone()))
+                .append(NEW_LINE)
+                .append(NEW_LINE)
+                .append(getLine(bundle, "adjusterEmail", assignmentRequest.getAdjusterEmail()))
                 .append(NEW_LINE)
                 .append(NEW_LINE)
                 .append(getString(bundle, "insuredClaimantHeader"))

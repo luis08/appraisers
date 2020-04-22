@@ -4,13 +4,14 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {AssignmentRequest} from '../assignment-request';
 import {AssignmentService} from '../assignment.service';
 import {AssignmentStateService} from '../assignment-state.service';
+import {AssignmentRequestBase} from '../../common/AssignmentRequestBase';
 
 @Component({
   selector: 'app-required-uploads-assignment',
   templateUrl: './required-uploads-assignment.component.html',
   styleUrls: ['./required-uploads-assignment.component.css']
 })
-export class RequiredUploadsAssignmentComponent implements OnInit {
+export class RequiredUploadsAssignmentComponent extends AssignmentRequestBase implements OnInit {
   @ViewChild('fileUpload1', {static: false}) fileUpload1: ElementRef;
   @ViewChild('fileUpload2', {static: false}) fileUpload2: ElementRef;
   @ViewChild('fileUpload3', {static: false}) fileUpload3: ElementRef;
@@ -32,6 +33,7 @@ export class RequiredUploadsAssignmentComponent implements OnInit {
               private formBuilder: FormBuilder,
               private ref: ChangeDetectorRef,
               private assignmentStateService: AssignmentStateService) {
+    super();
   }
 
   ngOnInit(): void {
@@ -47,6 +49,9 @@ export class RequiredUploadsAssignmentComponent implements OnInit {
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
         this.assignmentStateService.successfullySubmitted(ar);
+        this.setSuccess();
+      }).catch((reason: any) => {
+        this.setFailed();
       });
   }
 

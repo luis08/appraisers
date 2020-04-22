@@ -396,7 +396,7 @@
         <div class="col-md-4" *ngIf="!isWaiting()" >
 
           <div>
-            <div *ngIf="submitFailed()">
+            <div *ngIf="hasFailed()">
               <div class="alert alert-danger">Your request failed. Please select your upload files and try again.</div>
               <br/>
             </div>

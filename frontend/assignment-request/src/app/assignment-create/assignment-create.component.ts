@@ -5,26 +5,27 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {UploadSelectionService} from '../upload-selection.service';
 import {AssignmentStateService} from '../assignment-state.service';
+import {AssignmentRequestBase} from '../../common/AssignmentRequestBase';
 
 @Component({
   selector: 'app-assignment-create',
   templateUrl: './assignment-create.component.html',
   styleUrls: ['./assignment-create.component.css']
 })
-export class AssignmentCreateComponent implements OnInit, OnDestroy {
+export class AssignmentCreateComponent extends AssignmentRequestBase implements OnInit, OnDestroy {
   subscription: Subscription;
   registerForm: FormGroup;
   states: string[];
   files: any[];
   nextFileId = -1;
   assignmentRequest: AssignmentRequest;
-  formState = FormState.populate;
 
   constructor(private assigmentService: AssignmentService,
               private formBuilder: FormBuilder,
               private ref: ChangeDetectorRef,
               private uploadSelectionService: UploadSelectionService,
               private assignmentStateService: AssignmentStateService) {
+    super();
   }
 
   ngOnInit() {
@@ -107,16 +108,16 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
 
   create() {
     const assignmentRequest: AssignmentRequest = this._getAssignmentRequest();
-    this.formState = FormState.waiting;
+    this.setWaiting();
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
         this.assignmentStateService.successfullySubmitted(ar);
         this._resetForm();
         this.uploadSelectionService.clearFiles();
-        this.formState = FormState.succeeded;
+        this.setSuccess();
       }).catch((reason: any) => {
-      this.formState = FormState.failed;
-    });
+        this.setFailed();
+      });
   }
 
   removeFile(file) {
@@ -141,22 +142,6 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
         this.files.push(f);
       }
     }
-  }
-
-  isPopulating(): boolean {
-    return this.formState === FormState.populate;
-  }
-
-  submitFailed(): boolean {
-    return this.formState === FormState.failed;
-  }
-
-  isWaiting(): boolean {
-    return this.formState === FormState.waiting;
-  }
-
-  showSubmitButton() {
-    return !this.isWaiting();
   }
 
   /**
@@ -214,11 +199,4 @@ export class AssignmentCreateComponent implements OnInit, OnDestroy {
       year: 1991
     });
   }
-}
-
-export enum FormState {
-  populate,
-  waiting,
-  succeeded,
-  failed
 }

@@ -79,8 +79,22 @@
   </div>
   <br/><br/><br/>
   <div class="form-row">
-    <div class="col-md-4">
-      <button type="button" [disabled]="!isNew" class="main_btn" (click)="create()">Submit Assignment</button>
+    <div *ngIf="isWaiting()" class="align-content-center p-4 col-md-12">
+      <img alt="Waiting..." src="/img/waiting.gif"/>
+    </div>
+    <div class="col-md-4" *ngIf="!isWaiting()" >
+
+      <div>
+        <div *ngIf="hasFailed()">
+          <div class="alert alert-danger">Your request failed. Please select your upload files and try again.</div>
+          <br/>
+        </div>
+        <button *ngIf="showSubmitButton()" type="button" class="main_btn" (click)="create()">Save Me</button>
+      </div>
+    </div>
+    <div class="col-md-8" *ngIf="!isWaiting()">
+      <h4>Upload Documents and Photos</h4>
+      <app-multi-upload></app-multi-upload>
     </div>
   </div>
 

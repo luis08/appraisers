@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {UploadSelectionService} from "../upload-selection.service";
-import {AssignmentStateService} from "../assignment-state.service";
-import {AssignmentRequest} from "../assignment-request";
+import {UploadSelectionService} from '../upload-selection.service';
+import {AssignmentStateService} from '../assignment-state.service';
+import {AssignmentRequest} from '../assignment-request';
 
 @Component({
   selector: 'app-multi-upload',
@@ -17,7 +17,6 @@ export class MultiUploadComponent implements OnInit {
   constructor(private uploadSelectionService: UploadSelectionService,
               private assignmentStateService: AssignmentStateService) {
   }
-
 
   onClick() {
     const fileUpload = this.fileUpload.nativeElement;
