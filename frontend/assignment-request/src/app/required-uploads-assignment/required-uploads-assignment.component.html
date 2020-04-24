@@ -63,23 +63,34 @@
           <input type="text" class="form-control" id="companyZip" formControlName="companyZip">
         </div>
       </div>
+      <h4>Attachments</h4>
+      <p>Please include as many attachments possible as described below</p>
       <div class="form-row">
         <div class="col-md-6">
+          <hr/>
+          <label for="fileUpload1">Front End</label><br/>
           <input type="file" #fileUpload1 id="fileUpload1" name="fileUpload1" accept="image/*"/>
-          <br/><br/>
+          <hr/>
+          <label for="fileUpload2">Side Left</label><br/>
           <input type="file" #fileUpload2 id="fileUpload2" name="fileUpload2" accept="image/*"/>
-          <br/><br/>
+          <hr/>
+          <label for="fileUpload3">Side Right</label><br/>
           <input type="file" #fileUpload3 id="fileUpload3" name="fileUpload3" accept="image/*"/>
         </div>
         <div class="col-md-6">
+          <hr/>
+          <label for="fileUpload3">Something 1</label><br/>
           <input type="file" #fileUpload4 id="fileUpload4" name="fileUpload4" accept="image/*"/>
-          <br/><br/>
+          <hr/>
+          <label for="fileUpload3">Something 2</label><br/>
           <input type="file" #fileUpload5 id="fileUpload5" name="fileUpload5" accept="image/*"/>
-          <br/><br/>
+          <hr/>
+          <label for="fileUpload3">Something 3</label><br/>
           <input type="file" #fileUpload6 id="fileUpload6" name="fileUpload6" accept="image/*"/>
         </div>
       </div>
-      <br/><br/><br/>
+      <br/><br/>
+      <hr/>
       <div class="form-row">
         <div *ngIf="isWaiting()" class="align-content-center p-4 col-md-12">
           <img alt="Waiting..." src="/img/waiting.gif"/>
@@ -99,8 +110,4 @@
       </div>
     </div>
   </div>
-
-
-
-
 </form>

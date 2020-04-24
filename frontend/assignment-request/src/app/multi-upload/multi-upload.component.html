@@ -2,13 +2,13 @@
   <ul>
     <li *ngFor="let file of files" value="{{file.id}}" class="text-left">
       <button class="btn btn-link" (click)="removeFile(file)">[delete]</button>
-      &nbsp;
       <button type="button" class="btn btn-link">{{file.data.name}}</button>
       <span>{{file.name}}</span>
     </li>
   </ul>
+  <br *ngIf="files.length"/>
   <div class="overflow-auto">
-    <button class="btn btn-link" color="warn" (click)="onClick()">
+    <button class="btn btn-secondary" (click)="onClick()">
       Upload
     </button>
   </div>

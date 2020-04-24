@@ -42,14 +42,12 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group col-md-12">
+        <div class="form-group col-md-6">
           <label for="companyAddress1">Client/Company Address</label>
           <input type="text" class="form-control" id="companyAddress1" formControlName="companyAddress1"
                  placeholder="1234 Main St">
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-12">
+        <div class="form-group col-md-6">
           <input type="text" class="form-control" id="companyAddress2" formControlName="companyAddress2"
                  placeholder="Suite 100"/>
         </div>
@@ -192,14 +190,14 @@
       <div class="form-row">
         <div class="form-group col-md-4">
           <label for="make">Make</label>
-          <input type="number" class="form-control" id="make" formControlName="make">
+          <input type="text" class="form-control" id="make" formControlName="make">
         </div>
         <div class="form-group col-md-4">
           <label for="model">Model</label>
           <input type="text" class="form-control" id="model" formControlName="model">
         </div>
         <div class="form-group col-md-4">
-          <label for="year">year</label>
+          <label for="year">Year</label>
           <input type="number" class="form-control" id="year" formControlName="year">
         </div>
       </div>
@@ -354,31 +352,31 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label for="vehicleLocationAddress1">Address</label>
           <input type="text" class="form-control" id="vehicleLocationAddress1"
                  placeholder="1234 Main St" formControlName="vehicleLocationAddress1">
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label for="vehicleLocationAddress2">Address 2</label>
           <input type="text" class="form-control" id="vehicleLocationAddress2" placeholder="Unit"
                  formControlName="vehicleLocationAddress2">
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="vehicleLocationCity">City</label>
-            <input type="text" class="form-control" id="vehicleLocationCity" formControlName="vehicleLocationCity">
-          </div>
-          <div class="form-group col-md-4">
-            <label for="vehicleLocationState">State</label>
-            <select id="vehicleLocationState" class="form-control" formControlName="vehicleLocationState">
-              <option *ngFor="let state of states" value="{{state}}">{{state}}</option>
-            </select>
-          </div>
-          <div class="form-group col-md-2">
-            <label for="vehicleLocationZip">Zip</label>
-            <input type="text" class="form-control" id="vehicleLocationZip" formControlName="vehicleLocationZip">
-          </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="vehicleLocationCity">City</label>
+          <input type="text" class="form-control" id="vehicleLocationCity" formControlName="vehicleLocationCity">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="vehicleLocationState">State</label>
+          <select id="vehicleLocationState" class="form-control" formControlName="vehicleLocationState">
+            <option *ngFor="let state of states" value="{{state}}">{{state}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="vehicleLocationZip">Zip</label>
+          <input type="text" class="form-control" id="vehicleLocationZip" formControlName="vehicleLocationZip">
         </div>
       </div>
       <div class="form-row">
@@ -388,19 +386,25 @@
                  id="vehicleLocationPhone" formControlName="vehicleLocationPhone">
         </div>
       </div>
-
+      <hr/>
+      <br/>
       <div class="form-row">
         <div *ngIf="isWaiting()" class="align-content-center p-4 col-md-12">
           <img alt="Waiting..." src="/img/waiting.gif"/>
         </div>
-        <div class="col-md-4" *ngIf="!isWaiting()" >
+        <div class="col-md-4" *ngIf="!isWaiting()">
 
           <div>
             <div *ngIf="hasFailed()">
               <div class="alert alert-danger">Your request failed. Please select your upload files and try again.</div>
               <br/>
             </div>
-            <button *ngIf="showSubmitButton()" type="button" class="btn btn-primary" (click)="create()">Submit Assignment Request</button>
+            <div>
+              <br/>
+              <button *ngIf="showSubmitButton()" type="button" class="btn btn-primary" (click)="create()">Submit
+                Assignment Request
+              </button>
+            </div>
 
             <!-- TODO: remove next line -->
             <br/><br/><br/>
