@@ -46,6 +46,7 @@ export class RequiredUploadsAssignmentComponent extends AssignmentRequestBase im
     this.setupAttachments();
     const assignmentRequest: AssignmentRequest = this.registerForm.value;
     assignmentRequest.uploadingFiles = this.files;
+    this.setWaiting();
     this.assigmentService.create(assignmentRequest).toPromise()
       .then((ar: AssignmentRequest) => {
         this.assignmentStateService.successfullySubmitted(ar);
