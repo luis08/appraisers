@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {AssignmentRequest} from '../assignment-request';
 import {AssignmentService} from '../assignment.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Subscription} from 'rxjs';
+import {Subscription} from 'rxjs/internal/Subscription';
 import {UploadSelectionService} from '../upload-selection.service';
 import {AssignmentStateService} from '../assignment-state.service';
 import {AssignmentRequestBase} from '../../common/AssignmentRequestBase';

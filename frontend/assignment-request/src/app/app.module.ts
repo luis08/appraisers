@@ -13,6 +13,7 @@ import { MatToolbarModule,
   MatProgressBarModule } from '@angular/material';
 import { RequiredUploadsAssignmentComponent } from './required-uploads-assignment/required-uploads-assignment.component';
 import { SuccessfulSubmissionComponent } from './successful-submission/successful-submission.component';
+import { UploadOnlyComponent } from './upload-only/upload-only.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SuccessfulSubmissionComponent } from './successful-submission/successfu
     AssignmentCreateComponent,
     MultiUploadComponent,
     RequiredUploadsAssignmentComponent,
-    SuccessfulSubmissionComponent
+    SuccessfulSubmissionComponent,
+    UploadOnlyComponent
   ],
   imports: [
     BrowserModule,
