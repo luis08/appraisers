@@ -22,15 +22,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Date.from;
 
 @Service
 public class AssigmentRequestServiceImpl implements AssignmentRequestService {
@@ -54,6 +53,9 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
 
     @Autowired
     private GDrive googleDrive;
+
+    @Autowired
+    private GmailBuilderService gmailBuilderService;
 
     public static final String IDENTIFIER_MASK = "%s%02d%02d-%03d";
 
@@ -91,7 +93,7 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
         try {
             GoogleUploadItemDto googleUploadItemDto = new GoogleUploadItemDto("text/plain", fileName, fileName, assignmentRequest.getIdentifier(), document.getBytes());
             GDriveCommonResponse gDriveCommonResponse = googleDrive.uploadFile(googleUploadItemDto);
-            if(Objects.isNull(gDriveCommonResponse)){
+            if (Objects.isNull(gDriveCommonResponse)) {
                 return INVALID_RESPONSE;
             } else {
                 return Optional.ofNullable(gDriveCommonResponse.getId()).orElse(INVALID_RESPONSE);
@@ -103,8 +105,7 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
 
     private void sendEmail(String document, String identifier) {
         String subject = String.format("Assignment Request Received %s", identifier);
-        new GmailBuilderService()
-                .setTo(notificationEmail)
+        gmailBuilderService.setTo(notificationEmail)
                 .setSubject(subject)
                 .setBody(document)
                 .send(this.gmailService);
@@ -125,8 +126,9 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
     private Set<AssignmentRequestAttachmentSave> createAttachments(AssignmentRequestDto dto, AssignmentRequest assignmentRequest) throws Exception {
         if (Objects.nonNull(dto.getUploadingFiles())) {
             List<MultipartFile> multipartFiles = Arrays.asList(dto.getUploadingFiles());
-            Set<AssignmentRequestAttachmentSave> assignmentRequestAttachmentSet = assignmentRequestAttachmentService.create(assignmentRequest, multipartFiles).stream().collect(Collectors.toSet());
-            return assignmentRequestAttachmentSet;
+            return assignmentRequestAttachmentService.create(assignmentRequest, multipartFiles)
+                    .stream()
+                    .collect(Collectors.toSet());
         } else {
             return Collections.emptySet();
         }
@@ -134,8 +136,8 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
 
     private String getIdentifier() {
         LocalDate today = LocalDate.now();
-        java.util.Date from = Date.from(today.atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
-        java.util.Date to = Date.from(today.plus(Period.ofDays(1)).atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
+        Date from = from(today.atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
+        Date to = from(today.plus(Period.ofDays(1)).atStartOfDay(ZoneId.of(AssignmentUtils.US_EASTERN)).toInstant());
         int sequence = assignmentRequestRepository.findAllWithDateCreatedBetween(from, to).size();
         int year = today.getYear();
         String theYear = Integer.toString(year).substring(2);
