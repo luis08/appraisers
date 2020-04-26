@@ -44,7 +44,7 @@ export class AssignmentCreateComponent extends AssignmentRequestBase implements 
     this.subscription.unsubscribe();
   }
 
-  _resetForm() {
+  _resetForm(): void {
     this.nextFileId = -1;
     this.files = new Array<string>();
     this.states = this.assigmentService.getStates();
@@ -100,13 +100,17 @@ export class AssignmentCreateComponent extends AssignmentRequestBase implements 
     });
   }
 
-  _getAssignmentRequest() {
+  _getAssignmentRequest(): AssignmentRequest {
     const assignmentRequest: AssignmentRequest = this.registerForm.value;
     assignmentRequest.uploadingFiles = this.files;
     return assignmentRequest;
   }
 
-  create() {
+  setUploadOnly(): void {
+    this.assignmentStateService.setUploadOnly();
+  }
+
+  create(): void {
     const assignmentRequest: AssignmentRequest = this._getAssignmentRequest();
     this.setWaiting();
     this.assigmentService.create(assignmentRequest).toPromise()
@@ -116,32 +120,8 @@ export class AssignmentCreateComponent extends AssignmentRequestBase implements 
         this.uploadSelectionService.clearFiles();
         this.setSuccess();
       }).catch((reason: any) => {
-        this.setFailed();
-      });
-  }
-
-  removeFile(file) {
-    if (file && file.id) {
-      this.files = this.files.filter(f => f.id !== file.id);
-    }
-  }
-
-  onFileSelectionChange(event) {
-    if (event.target && event.target.files.length) {
-      for (const f of event.target.files) {
-        f.id = this.nextFileId--;
-        this.files.push(f);
-      }
-    }
-  }
-
-  onAdditionalFilesSelectionChange(event) {
-    if (event.target && event.target.files.length) {
-      for (const f of event.target.files) {
-        f.id = this.nextFileId--;
-        this.files.push(f);
-      }
-    }
+      this.setFailed();
+    });
   }
 
   /**

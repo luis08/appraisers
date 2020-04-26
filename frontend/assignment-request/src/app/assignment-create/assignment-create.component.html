@@ -3,7 +3,7 @@
     <div class="col-md-1"></div>
     <div class="col-md-10">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 align-self-center">
           <h2 class="text-heading title_color">Submit Assignment</h2>
           <p>Have your own assignment sheet? Simply complete the required fields and upload assignment
             sheet
@@ -12,9 +12,19 @@
         </div>
         <div class="col-md-6 border  align-self-center">
           <div class="card-body">
+
             <p><strong class="font-italic">Have a form with the information below?</strong></p>
-            <p><a href="javascript:void(0)">Click here</a>
-              and simply upload your form with no typing!</p>
+            <div class="row">
+              <div class="col-md-4">
+                <button type="button" class="btn btn-primary" (click)="setUploadOnly() ">Click Here</button>
+              </div>
+              <div class="col-md-8">
+                <p>You can simply upload your form with no typing, or email it to <a
+                  href="mailto:admin@isdappraisers.com!?Subject=New%20assignment%20request" target="_top">admin@isdappraisers.com</a>!
+                </p>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -405,7 +415,6 @@
           <img alt="Waiting..." src="/img/waiting.gif"/>
         </div>
         <div class="col-md-4" *ngIf="!isWaiting()">
-
           <div>
             <div *ngIf="hasFailed()">
               <div class="alert alert-danger">Your request failed. Please select your upload files and try again.</div>
@@ -420,7 +429,7 @@
 
             <!-- TODO: remove next line -->
             <br/><br/><br/>
-            <button type="button" class="btn btn-secondary" (click)="populate()">Populate Me</button>
+            <button type="button" class="btn btn-secondary m-2" (click)="populate()">Populate Me</button>
           </div>
         </div>
         <div class="col-md-8" *ngIf="!isWaiting()">

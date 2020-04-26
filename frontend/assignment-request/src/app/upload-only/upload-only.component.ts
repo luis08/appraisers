@@ -14,7 +14,7 @@ import {AssignmentRequest} from '../assignment-request';
 export class UploadOnlyComponent extends AssignmentRequestBase implements OnInit {
   subscription: Subscription;
   states: string[];
-  files: any[];
+  files = [];
   nextFileId = -1;
   assignmentRequest: AssignmentRequest;
 
@@ -34,10 +34,6 @@ export class UploadOnlyComponent extends AssignmentRequestBase implements OnInit
         this.files = [];
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 
   create() {
@@ -75,6 +71,10 @@ export class UploadOnlyComponent extends AssignmentRequestBase implements OnInit
         this.files.push(f);
       }
     }
+  }
+
+  showSubmitButton(): boolean {
+    return super.showSubmitButton() && !!this.files.length;
   }
 
   private _getAssignmentRequest() {

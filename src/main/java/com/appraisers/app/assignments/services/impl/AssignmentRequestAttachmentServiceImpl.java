@@ -74,7 +74,7 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
             String identifier = assignmentRequestAttachment.getAssignmentRequest().getIdentifier();
             GDriveCommonResponse uploadFileToGoogleDrive = gDrive.uploadFile(mpf, identifier);
 
-            if(uploadFileToGoogleDrive != null) {
+            if (uploadFileToGoogleDrive != null) {
                 if (!notifiedFolderCreation) {
                     notifiedFolderCreation = true;
                     emailMessage.add(getFolderCreatedMessage(uploadFileToGoogleDrive.getFolderId()));
@@ -91,7 +91,8 @@ public class AssignmentRequestAttachmentServiceImpl implements AssignmentRequest
     }
 
     private String getGoogleDriveNotAvailable(AssignmentRequestAttachment assignmentRequestAttachment, String identifier) {
-        return String.format("Google Drive not available for [%s] on Assignment Request [%s]", assignmentRequestAttachment.getOriginalFileName(), identifier);
+        return String.format("Google Drive not available for [%s] on Assignment Request [%s].  The file was not uploaded.  Please follow up with the request.",
+                assignmentRequestAttachment.getOriginalFileName(), identifier);
     }
 
     private String getFileUploadMessage(AssignmentRequestAttachment assignmentRequestAttachment) {

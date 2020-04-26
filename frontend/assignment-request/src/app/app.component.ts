@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AssignmentState, AssignmentStateService} from './assignment-state.service'
+import {AssignmentState, AssignmentStateService} from './assignment-state.service';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +26,10 @@ export class AppComponent implements OnInit {
     return this.state === AssignmentState.SuccessfulSubmission;
   }
 
+  showUploadOnly() {
+    return this.state === AssignmentState.UploadOnly;
+  }
+
   /**
    * We need the url into this component to be something like
    * something.com/assignment-request/index.html?full
@@ -37,7 +41,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.originalState = this.assignmentStateService.getState(window.location.href) || AssignmentState.Full;
-    if(this.originalState === AssignmentState.SuccessfulSubmission) {
+    if (this.originalState === AssignmentState.SuccessfulSubmission) {
       this.originalState = AssignmentState.Full;
     }
     this.state = this.originalState;

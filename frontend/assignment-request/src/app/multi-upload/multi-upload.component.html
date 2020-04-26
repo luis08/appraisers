@@ -1,6 +1,6 @@
 <div class="border  mh-100">
   <ul>
-    <li *ngFor="let file of files" value="{{file.id}}" class="text-left">
+    <li *ngFor="let file of files" value="{{file.id}}" class="text-left list-group-item">
       <button class="btn btn-link" (click)="removeFile(file)">[delete]</button>
       <button type="button" class="btn btn-link">{{file.data.name}}</button>
       <span>{{file.name}}</span>
@@ -8,7 +8,7 @@
   </ul>
   <br *ngIf="files.length"/>
   <div class="overflow-auto">
-    <button class="btn btn-secondary" (click)="onClick()">
+    <button class="btn btn-secondary m-2" (click)="onClick()">
       Upload
     </button>
   </div>

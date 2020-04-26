@@ -16,17 +16,9 @@ export class AssignmentStateService {
 
   sharedStateBucket = this.stateBucketSource.asObservable();
 
-  setSuccessful(): void {
-    this.stateBucketSource.getValue().assignmentState = AssignmentState.SuccessfulSubmission;
-  }
-
-  setFull() {
-    const assignmentStateBucket = new AssignmentStateBucket(AssignmentState.Full, null);
+  setUploadOnly(): void {
+    const assignmentStateBucket = new AssignmentStateBucket(AssignmentState.UploadOnly, null);
     this.stateBucketSource.next(assignmentStateBucket);
-  }
-
-  setMultiUpload() {
-    this.stateBucketSource = new BehaviorSubject(new AssignmentStateBucket(AssignmentState.MultiUpload, null));
   }
 
   successfullySubmitted(assignmentRequest: AssignmentRequest): void {
@@ -66,6 +58,8 @@ export class AssignmentStateService {
       return AssignmentState.MultiUpload;
     } else if (urlPart.toLocaleLowerCase() === 'full') {
       return AssignmentState.Full;
+    } else if ( urlPart.toLocaleLowerCase() === 'upload-only') {
+      return AssignmentState.UploadOnly;
     } else {
       return null;
     }
@@ -79,5 +73,6 @@ export class AssignmentStateService {
 export enum AssignmentState {
   Full,
   MultiUpload,
+  UploadOnly,
   SuccessfulSubmission
 }
