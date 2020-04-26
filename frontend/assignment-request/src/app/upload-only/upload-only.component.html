@@ -1,0 +1,12 @@
+<p>upload-only works!</p>
+<h3>Upload Assignment Request Form</h3>
+<p>Please upload your form and suupporting documents below</p>
+<div class="row">
+  <div class="col-md-8" >
+    <h4>Upload Documents and Photos</h4>
+    <app-multi-upload></app-multi-upload>
+  </div>
+</div>
+<button *ngIf="showSubmitButton()" type="button" class="btn btn-primary" (click)="create()">Submit Assignment
+  Request
+</button>
