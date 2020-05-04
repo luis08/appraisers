@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {AssignmentRequest} from '../assignment-request';
 import {AssignmentService} from '../assignment.service';
 import {AssignmentStateService} from '../assignment-state.service';
-import {AssignmentRequestBase} from '../../common/AssignmentRequestBase';
+import {AssignmentRequestBase} from '../assignment-create/AssignmentRequestBase';
 
 @Component({
   selector: 'app-required-uploads-assignment',

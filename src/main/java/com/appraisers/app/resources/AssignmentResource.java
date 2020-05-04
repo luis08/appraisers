@@ -14,6 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @RestController
 public class AssignmentResource {
     private AssignmentRequestService assignmentRequestService;
@@ -36,8 +40,31 @@ public class AssignmentResource {
 
     @GetMapping("/assignment/{id}/text")
     public String getForm(@PathVariable Long id) {
+        checkNotNull(id);
         AssignmentRequest assignmentRequest = assignmentRequestService.get(id);
         return assignmentRequestDocumentService.getDocument(assignmentRequest);
+    }
+
+    @GetMapping("/assignments/{id}")
+    public ResponseEntity<AssignmentRequestProjection> getById(@PathVariable Long id) {
+        checkNotNull(id);
+        AssignmentRequest assignmentRequest = assignmentRequestService.get(id);
+        if(Objects.isNull(assignmentRequest)) {
+            return ResponseEntity.notFound().build();
+        }
+        AssignmentRequestProjection assignmentRequestProjection = new AssignmentRequestProjection(assignmentRequest);
+        return ResponseEntity.ok().body(assignmentRequestProjection);
+    }
+
+    @GetMapping("/assignments/{identifier}")
+    public ResponseEntity<AssignmentRequestProjection> getByIdentifier(@PathVariable String identifier) {
+        checkNotNull(identifier);
+        AssignmentRequest assignmentRequest = assignmentRequestService.getByIdentifier(identifier);
+        if(Objects.isNull(assignmentRequest)) {
+            return ResponseEntity.notFound().build();
+        }
+        AssignmentRequestProjection assignmentRequestProjection = new AssignmentRequestProjection(assignmentRequest);
+        return ResponseEntity.ok().body(assignmentRequestProjection);
     }
 
     @GetMapping("/assignments")

@@ -15,6 +15,7 @@ public interface AssignmentRequestRepository extends JpaRepository<AssignmentReq
     List<AssignmentRequest> findByDateCreatedAfterAndDateCreatedBefore(Date after, Date before);
 
     int countAllByDateCreatedGreaterThanEqualAndDateCreatedLessThan(Date from, Date to);
+    AssignmentRequest findByIdentifier(String identifier);
 
     @Query("select a from AssignmentRequest a where a.dateCreated >= :fromDate and a.dateCreated <=:toDate")
     List<AssignmentRequest> findAllWithDateCreatedBetween(

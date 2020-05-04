@@ -5,12 +5,12 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs/internal/Subscription';
 import {UploadSelectionService} from '../upload-selection.service';
 import {AssignmentStateService} from '../assignment-state.service';
-import {AssignmentRequestBase} from '../../common/AssignmentRequestBase';
+import {AssignmentRequestBase} from './AssignmentRequestBase';
 
 @Component({
   selector: 'app-assignment-create',
-  templateUrl: './assignment-create.component.html',
-  styleUrls: ['./assignment-create.component.css']
+  templateUrl: '../../../../common/templates/assignment-request.view.html',
+  styleUrls: ['../../../../common/css/assignment-request.view.css']
 })
 export class AssignmentCreateComponent extends AssignmentRequestBase implements OnInit, OnDestroy {
   subscription: Subscription;

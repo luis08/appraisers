@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {AssignmentRequestBase} from '../../common/AssignmentRequestBase';
+import {AssignmentRequestBase} from '../assignment-create/AssignmentRequestBase';
 import {AssignmentService} from '../assignment.service';
 import {UploadSelectionService} from '../upload-selection.service';
 import {AssignmentStateService} from '../assignment-state.service';

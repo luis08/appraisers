@@ -1,4 +1,4 @@
-import {FormState} from './FormState';
+import {FormState} from '../FormState';
 
 export class AssignmentRequestBase {
   private formState = FormState.populate;

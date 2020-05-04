@@ -11,4 +11,5 @@ public interface AssignmentRequestService {
     AssignmentRequest create(AssignmentRequestDto dto) throws Exception;
     Page<AssignmentRequest> findAll(Pageable pageable);
     AssignmentRequest get(Long id);
+    AssignmentRequest getByIdentifier(String identifier);
 }

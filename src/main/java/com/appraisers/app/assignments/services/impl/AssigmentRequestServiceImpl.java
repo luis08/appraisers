@@ -123,6 +123,12 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
         return assignmentRequestRepository.getOne(id);
     }
 
+    @Override
+    public AssignmentRequest getByIdentifier(String identifier) {
+        checkNotNull(identifier);
+        return assignmentRequestRepository.findByIdentifier(identifier);
+    }
+
     private Set<AssignmentRequestAttachmentSave> createAttachments(AssignmentRequestDto dto, AssignmentRequest assignmentRequest) throws Exception {
         if (Objects.nonNull(dto.getUploadingFiles())) {
             List<MultipartFile> multipartFiles = Arrays.asList(dto.getUploadingFiles());
