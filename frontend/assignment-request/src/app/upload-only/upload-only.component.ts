@@ -36,7 +36,7 @@ export class UploadOnlyComponent extends AssignmentRequestBase implements OnInit
     });
   }
 
-  create() {
+  save() {
     const assignmentRequest: AssignmentRequest = this._getAssignmentRequest();
     this.setWaiting();
     this.assigmentService.create(assignmentRequest).toPromise()

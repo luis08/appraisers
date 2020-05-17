@@ -1,49 +1,5 @@
 <app-home></app-home>
 <!-- main app container -->
-<div class="card text-center m-3">
-  <div id="list-container" *ngIf="!assignmentRequest">
-    <h3 class="card-header">Assignment Requests</h3>
-    <div class="card-body">
-      <table class="w-100 table table-striped">
-        <caption>Assignments</caption>
-        <thead>
-        <tr>
-          <th id="identifier">Id</th>
-          <th id="company-name">Company Name</th>
-          <th id="adjuster-first">Adjuster First</th>
-          <th id="adjuster-last">Adjuster Last</th>
-          <th id="adjuster-phone">Adjuster Phone</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let assignmentRequest of assignmentRequests">
-          <td>
-            <button class="btn btn-link" (click)="open(assignmentRequest)">{{assignmentRequest.identifier}}</button>
-          </td>
-          <td>{{assignmentRequest.companyName}}</td>
-          <td>{{assignmentRequest.adjusterFirstName}}</td>
-          <td>{{assignmentRequest.adjusterLastName}}</td>
-          <td>{{assignmentRequest.adjusterPhone}}</td>
-        </tr>
-        </tbody>
-      </table>
-      <ul class="pagination">
-        <li>
-          <button class="btn btn-link"
-                  (click)="setPage(1)">First
-          </button>
-        </li>
-        <li *ngFor="let page of jwPager.pages" [ngClass]="{active:pager.currentPage === page}"
-            class="page-item number-item">
-          <a (click)="setPage(page)" class="page-link">{{page}}</a>
-        </li>
-        <button type="button" class="btn btn-link"
-                (click)="setPage(pager.totalPages)">Last
-        </button>
-      </ul>
-    </div>
-  </div>
-  <div id="assignment-request-container" *ngIf="assignmentRequest">
-    <app-assignment-request-quick-view [assignmentRequest]="assignmentRequest"></app-assignment-request-quick-view>
-  </div>
-</div>
+
+<app-assignment-requests></app-assignment-requests>
+<app-assignment-request [assignmentRequestId]="17"></app-assignment-request>

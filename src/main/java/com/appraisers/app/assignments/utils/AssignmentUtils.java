@@ -1,6 +1,7 @@
 package com.appraisers.app.assignments.utils;
 
 import com.appraisers.app.assignments.domain.AssignmentRequest;
+import com.appraisers.app.assignments.domain.AssignmentRequestBase;
 import com.appraisers.app.assignments.dto.AssignmentRequestDto;
 import com.appraisers.app.assignments.dto.utils.DtoUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -16,64 +17,119 @@ public class AssignmentUtils {
 
     public static final String US_EASTERN = "US/Eastern";
 
-    public static AssignmentRequest getAssignmentRequest(AssignmentRequestDto dto) throws ParseException {
-        AssignmentRequest assignmentRequest = new AssignmentRequest();
-        assignmentRequest.setAccountNumber(dto.getAccountNumber());
-        assignmentRequest.setAdjusterEmail(dto.getAdjusterEmail());
-        assignmentRequest.setAdjusterFirstName(dto.getAdjusterFirstName());
-        assignmentRequest.setAdjusterLastName(dto.getAdjusterLastName());
-        assignmentRequest.setAdjusterPhone(dto.getAdjusterPhone());
-        assignmentRequest.setClaimantAddress1(dto.getClaimantAddress1());
-        assignmentRequest.setClaimantAddress2(dto.getClaimantAddress2());
-        assignmentRequest.setClaimantCity(dto.getClaimantCity());
-        assignmentRequest.setClaimantEmail(dto.getClaimantEmail());
-        assignmentRequest.setClaimantFirst(dto.getClaimantFirst());
-        assignmentRequest.setClaimantLast(dto.getClaimantLast());
-        assignmentRequest.setClaimantPhone(dto.getClaimantPhone());
-        assignmentRequest.setClaimantState(dto.getClaimantState());
-        assignmentRequest.setClaimantZip(dto.getClaimantZip());
-        assignmentRequest.setClaimNumber(dto.getClaimNumber());
-        assignmentRequest.setCompanyAddress1(dto.getCompanyAddress1());
-        assignmentRequest.setCompanyAddress2(dto.getCompanyAddress2());
-        assignmentRequest.setCompanyCity(dto.getCompanyCity());
-        assignmentRequest.setCompanyName(dto.getCompanyName());
-        assignmentRequest.setCompanyState(dto.getCompanyState());
-        assignmentRequest.setCompanyZip(dto.getCompanyZip());
+    public static void populate(AssignmentRequestDto dto, AssignmentRequestBase assignmentRequestBase) throws ParseException {
+        assignmentRequestBase.setAccountNumber(dto.getAccountNumber());
+        assignmentRequestBase.setAdjusterEmail(dto.getAdjusterEmail());
+        assignmentRequestBase.setAdjusterFirstName(dto.getAdjusterFirstName());
+        assignmentRequestBase.setAdjusterLastName(dto.getAdjusterLastName());
+        assignmentRequestBase.setAdjusterPhone(dto.getAdjusterPhone());
+        assignmentRequestBase.setClaimantAddress1(dto.getClaimantAddress1());
+        assignmentRequestBase.setClaimantAddress2(dto.getClaimantAddress2());
+        assignmentRequestBase.setClaimantCity(dto.getClaimantCity());
+        assignmentRequestBase.setClaimantEmail(dto.getClaimantEmail());
+        assignmentRequestBase.setClaimantFirst(dto.getClaimantFirst());
+        assignmentRequestBase.setClaimantLast(dto.getClaimantLast());
+        assignmentRequestBase.setClaimantPhone(dto.getClaimantPhone());
+        assignmentRequestBase.setClaimantState(dto.getClaimantState());
+        assignmentRequestBase.setClaimantZip(dto.getClaimantZip());
+        assignmentRequestBase.setClaimNumber(dto.getClaimNumber());
+        assignmentRequestBase.setCompanyAddress1(dto.getCompanyAddress1());
+        assignmentRequestBase.setCompanyAddress2(dto.getCompanyAddress2());
+        assignmentRequestBase.setCompanyCity(dto.getCompanyCity());
+        assignmentRequestBase.setCompanyName(dto.getCompanyName());
+        assignmentRequestBase.setCompanyState(dto.getCompanyState());
+        assignmentRequestBase.setCompanyZip(dto.getCompanyZip());
         if (Strings.isNotEmpty(dto.getDateOfLoss())) {
-            assignmentRequest.setDateOfLoss(new SimpleDateFormat("MM/dd/yyyy").parse(dto.getDateOfLoss()));
+            assignmentRequestBase.setDateOfLoss(new SimpleDateFormat("MM/dd/yyyy").parse(dto.getDateOfLoss()));
         }
         if (Strings.isNotEmpty(dto.getDeductibleAmount())) {
-            assignmentRequest.setDeductibleAmount(dto.getDeductibleAmount());
+            assignmentRequestBase.setDeductibleAmount(dto.getDeductibleAmount());
         }
 
-        assignmentRequest.setInsuredClaimantSameAsOwner(DtoUtils.parseOrNull(dto.getInsuredClaimantSameAsOwner()));
-        assignmentRequest.setInsuredOrClaimant(dto.getInsuredOrClaimant());
-        assignmentRequest.setIsRepairFacility(DtoUtils.parseOrNull(dto.getIsRepairFacility()));
-        assignmentRequest.setLicense(dto.getLicense());
-        assignmentRequest.setLicenseState(dto.getLicenseState());
-        assignmentRequest.setLossDescription(dto.getLossDescription());
-        assignmentRequest.setMake(dto.getMake());
-        assignmentRequest.setModel(dto.getModel());
-        assignmentRequest.setPolicyNumber(dto.getPolicyNumber());
-        assignmentRequest.setProvideAcvEvaluation(DtoUtils.parseOrNull(dto.getProvideAcvEvaluation()));
-        assignmentRequest.setProvidesCopyOfAppraisal(DtoUtils.parseOrNull(dto.getProvidesCopyOfAppraisal()));
-        assignmentRequest.setRequestSalvageBids(DtoUtils.parseOrNull(dto.getRequestSalvageBids()));
+        assignmentRequestBase.setInsuredClaimantSameAsOwner(DtoUtils.parseOrNull(dto.getInsuredClaimantSameAsOwner()));
+        assignmentRequestBase.setInsuredOrClaimant(dto.getInsuredOrClaimant());
+        assignmentRequestBase.setIsRepairFacility(DtoUtils.parseOrNull(dto.getIsRepairFacility()));
+        assignmentRequestBase.setLicense(dto.getLicense());
+        assignmentRequestBase.setLicenseState(dto.getLicenseState());
+        assignmentRequestBase.setLossDescription(dto.getLossDescription());
+        assignmentRequestBase.setMake(dto.getMake());
+        assignmentRequestBase.setModel(dto.getModel());
+        assignmentRequestBase.setPolicyNumber(dto.getPolicyNumber());
+        assignmentRequestBase.setProvideAcvEvaluation(DtoUtils.parseOrNull(dto.getProvideAcvEvaluation()));
+        assignmentRequestBase.setProvidesCopyOfAppraisal(DtoUtils.parseOrNull(dto.getProvidesCopyOfAppraisal()));
+        assignmentRequestBase.setRequestSalvageBids(DtoUtils.parseOrNull(dto.getRequestSalvageBids()));
         if (Objects.isNull(dto.getTypeOfLoss())) {
-            assignmentRequest.setTypeOfLoss("Unknown");
+            assignmentRequestBase.setTypeOfLoss("Unknown");
         } else {
-            assignmentRequest.setTypeOfLoss(dto.getTypeOfLoss());
+            assignmentRequestBase.setTypeOfLoss(dto.getTypeOfLoss());
         }
-        assignmentRequest.setValuationMethod(dto.getValuationMethod());
-        assignmentRequest.setVehicleLocationAddress1(dto.getVehicleLocationAddress1());
-        assignmentRequest.setVehicleLocationAddress2(dto.getVehicleLocationAddress2());
-        assignmentRequest.setVehicleLocationCity(dto.getVehicleLocationCity());
-        assignmentRequest.setVehicleLocationName(dto.getVehicleLocationName());
-        assignmentRequest.setVehicleLocationPhone(dto.getVehicleLocationPhone());
-        assignmentRequest.setVehicleLocationState(dto.getVehicleLocationState());
-        assignmentRequest.setVehicleLocationZip(dto.getVehicleLocationZip());
-        assignmentRequest.setVin(dto.getVin());
-        assignmentRequest.setYear(dto.getYear());
-        return assignmentRequest;
+        assignmentRequestBase.setValuationMethod(dto.getValuationMethod());
+        assignmentRequestBase.setVehicleLocationAddress1(dto.getVehicleLocationAddress1());
+        assignmentRequestBase.setVehicleLocationAddress2(dto.getVehicleLocationAddress2());
+        assignmentRequestBase.setVehicleLocationCity(dto.getVehicleLocationCity());
+        assignmentRequestBase.setVehicleLocationName(dto.getVehicleLocationName());
+        assignmentRequestBase.setVehicleLocationPhone(dto.getVehicleLocationPhone());
+        assignmentRequestBase.setVehicleLocationState(dto.getVehicleLocationState());
+        assignmentRequestBase.setVehicleLocationZip(dto.getVehicleLocationZip());
+        assignmentRequestBase.setVin(dto.getVin());
+        assignmentRequestBase.setYear(dto.getYear());
+    }
+
+    public static void copy(AssignmentRequestBase source, AssignmentRequestBase target) {
+        target.setAccountNumber(source.getAccountNumber());
+        target.setAdjusterEmail(source.getAdjusterEmail());
+        target.setAdjusterFirstName(source.getAdjusterFirstName());
+        target.setAdjusterLastName(source.getAdjusterLastName());
+        target.setAdjusterPhone(source.getAdjusterPhone());
+        target.setClaimantAddress1(source.getClaimantAddress1());
+        target.setClaimantAddress2(source.getClaimantAddress2());
+        target.setClaimantCity(source.getClaimantCity());
+        target.setClaimantEmail(source.getClaimantEmail());
+        target.setClaimantFirst(source.getClaimantFirst());
+        target.setClaimantLast(source.getClaimantLast());
+        target.setClaimantPhone(source.getClaimantPhone());
+        target.setClaimantState(source.getClaimantState());
+        target.setClaimantZip(source.getClaimantZip());
+        target.setClaimNumber(source.getClaimNumber());
+        target.setCompanyAddress1(source.getCompanyAddress1());
+        target.setCompanyAddress2(source.getCompanyAddress2());
+        target.setCompanyCity(source.getCompanyCity());
+        target.setCompanyName(source.getCompanyName());
+        target.setCompanyState(source.getCompanyState());
+        target.setCompanyZip(source.getCompanyZip());
+        target.setDateOfLoss(source.getDateOfLoss());
+
+        if (Strings.isNotEmpty(source.getDeductibleAmount())) {
+            target.setDeductibleAmount(source.getDeductibleAmount());
+        }
+
+        target.setInsuredClaimantSameAsOwner(source.getInsuredClaimantSameAsOwner());
+        target.setInsuredOrClaimant(source.getInsuredOrClaimant());
+        target.setIsRepairFacility(source.getIsRepairFacility());
+        target.setLicense(source.getLicense());
+        target.setLicenseState(source.getLicenseState());
+        target.setLossDescription(source.getLossDescription());
+        target.setMake(source.getMake());
+        target.setModel(source.getModel());
+        target.setPolicyNumber(source.getPolicyNumber());
+        target.setProvideAcvEvaluation(source.getProvideAcvEvaluation());
+        target.setProvidesCopyOfAppraisal(source.getProvidesCopyOfAppraisal());
+        target.setRequestSalvageBids(source.getRequestSalvageBids());
+        if (Objects.isNull(source.getTypeOfLoss())) {
+            target.setTypeOfLoss("Unknown");
+        } else {
+            target.setTypeOfLoss(source.getTypeOfLoss());
+        }
+        target.setValuationMethod(source.getValuationMethod());
+        target.setVehicleLocationAddress1(source.getVehicleLocationAddress1());
+        target.setVehicleLocationAddress2(source.getVehicleLocationAddress2());
+        target.setVehicleLocationCity(source.getVehicleLocationCity());
+        target.setVehicleLocationName(source.getVehicleLocationName());
+        target.setVehicleLocationPhone(source.getVehicleLocationPhone());
+        target.setVehicleLocationState(source.getVehicleLocationState());
+        target.setVehicleLocationZip(source.getVehicleLocationZip());
+        target.setVin(source.getVin());
+        target.setYear(source.getYear());
     }
 
     public static ZonedDateTime getZonedDateTime() {

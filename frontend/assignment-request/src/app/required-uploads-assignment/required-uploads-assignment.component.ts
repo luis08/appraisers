@@ -42,7 +42,7 @@ export class RequiredUploadsAssignmentComponent extends AssignmentRequestBase im
 
   }
 
-  create() {
+  save() {
     this.setupAttachments();
     const assignmentRequest: AssignmentRequest = this.registerForm.value;
     assignmentRequest.uploadingFiles = this.files;

@@ -9,8 +9,8 @@ import {AssignmentRequestBase} from './AssignmentRequestBase';
 
 @Component({
   selector: 'app-assignment-create',
-  templateUrl: '../../../../common/templates/assignment-request.view.html',
-  styleUrls: ['../../../../common/css/assignment-request.view.css']
+  templateUrl: './assignment-create.component.html',
+  styleUrls: ['./assignment-create.component.css']
 })
 export class AssignmentCreateComponent extends AssignmentRequestBase implements OnInit, OnDestroy {
   subscription: Subscription;
@@ -110,7 +110,7 @@ export class AssignmentCreateComponent extends AssignmentRequestBase implements 
     this.assignmentStateService.setUploadOnly();
   }
 
-  create(): void {
+  save(): void {
     const assignmentRequest: AssignmentRequest = this._getAssignmentRequest();
     this.setWaiting();
     this.assigmentService.create(assignmentRequest).toPromise()

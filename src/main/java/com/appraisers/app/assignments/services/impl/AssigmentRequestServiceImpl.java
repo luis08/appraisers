@@ -62,7 +62,8 @@ public class AssigmentRequestServiceImpl implements AssignmentRequestService {
     @Override
     public AssignmentRequest create(AssignmentRequestDto dto) throws Exception {
         checkNotNull(dto);
-        AssignmentRequest assignmentRequest = AssignmentUtils.getAssignmentRequest(dto);
+        AssignmentRequest assignmentRequest = new AssignmentRequest();
+        AssignmentUtils.populate(dto, assignmentRequest);
         assignmentRequest.setActive(true);
         assignmentRequest.setIdentifier(getIdentifier());
 
