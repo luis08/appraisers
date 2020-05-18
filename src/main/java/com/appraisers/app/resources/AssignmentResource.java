@@ -3,7 +3,6 @@ package com.appraisers.app.resources;
 import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.AssignmentRequestMutation;
 import com.appraisers.app.assignments.dto.AssignmentRequestDto;
-import com.appraisers.app.assignments.dto.AssignmentRequestMutationDto;
 import com.appraisers.app.assignments.dto.AssignmentRequestMutationProjection;
 import com.appraisers.app.assignments.dto.AssignmentRequestProjection;
 import com.appraisers.app.assignments.services.AssignmentRequestDocumentService;
@@ -14,11 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.websocket.server.PathParam;
 import java.text.ParseException;
 import java.util.Objects;
 
@@ -58,8 +57,8 @@ public class AssignmentResource {
         }
     }
 
-    @PostMapping(value = "/assignment/{assignmentRequestId}/update", consumes = {"multipart/form-data"})
-    public ResponseEntity<AssignmentRequestMutationProjection> update(@PathVariable(value = "assignmentRequestId") Long assignmentRequestId, @RequestPart(value = "assignmentRequestDto") AssignmentRequestDto assignmentRequestDto) {
+    @PostMapping(value = "/assignment/{assignmentRequestId}/update", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<AssignmentRequestMutationProjection> update(@PathVariable(value = "assignmentRequestId") Long assignmentRequestId, @RequestBody AssignmentRequestDto assignmentRequestDto) {
         try {
             AssignmentRequestMutation assignmentRequestMutation = assignmentRequestMutationService.save(assignmentRequestDto, assignmentRequestId);
             return ResponseEntity.ok().body(new AssignmentRequestMutationProjection(assignmentRequestMutation));

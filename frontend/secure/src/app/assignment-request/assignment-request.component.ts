@@ -4,6 +4,7 @@ import {AssignmentRequest} from '../../../../assignment-request/src/app/assignme
 import {Observable} from 'rxjs';
 import {AssignmentRequestBase} from '../AssignmentRequestBase';
 import {HttpClient} from '@angular/common/http';
+import {AssignmentRequestIdService} from '../assignment-request-id.service';
 
 @Component({
   selector: 'app-assignment-request',
@@ -14,14 +15,15 @@ export class AssignmentRequestComponent extends AssignmentRequestBase implements
   @Input() assignmentRequestId: number;
   registerForm: FormGroup;
   assignmentRequest: Observable<AssignmentRequest>;
-  baseUrl = '/assignment/latest';
+  baseUrl = '/assignment';
   states: string[] = ['AL', 'AK', 'AZ', 'AR', 'CF', 'CL', 'CT', 'DL', 'DC', 'FL', 'GA', 'HA', 'ID', 'IL', 'IN',
     'IA', 'KA', 'KY', 'LA', 'ME', 'MD', 'MS', 'MC', 'MN', 'MI', 'MO', 'MT', 'NB', 'NV', 'NH', 'NJ', 'NM', 'NY',
     'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WN', 'WV', 'WS', 'WY'];
 
   constructor(
     private formBuilder: FormBuilder,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private assignmentRequestIdService: AssignmentRequestIdService) {
     super();
   }
 
@@ -78,46 +80,43 @@ export class AssignmentRequestComponent extends AssignmentRequestBase implements
     });
     this.getAppraisal();
   }
-  getAssignmentRequestId(mutation) : number {
+
+  getAssignmentRequestId(mutation): number {
     if (mutation && mutation.assignmentRequest && mutation.assignmentRequest.id) {
-      console.log('Found assignment request id: ' + mutation.assignmentRequest.id);
       return mutation.assignmentRequest.id;
     } else {
-      console.log('Found no assignment request id: ');
       return null;
     }
   }
 
   getAppraisal(): void {
-    this.http.get(this.baseUrl + '/' + this.assignmentRequestId).toPromise()
+    const url = this.baseUrl + '/latest/' + this.assignmentRequestId;
+    this.http.get(url).toPromise()
       .then((mutation) => {
         const assignmentRequestId = this.getAssignmentRequestId(mutation);
         const assignmentRequest = Object.assign({
           id: assignmentRequestId
         }, mutation);
         this.registerForm.patchValue(assignmentRequest);
+        this.assignmentRequestId = assignmentRequestId;
       });
-  }
-
-  submit() {
-
   }
 
   save(): void {
-    const url = this.baseUrl + '/' + this.getAssignmentRequestId(this.assignmentRequest.);
-    const assignmentRequestMutation = {};
+    this.setWaiting();
+    const url = this.baseUrl + '/' + this.assignmentRequestId + '/update';
+    const assignmentRequestMutation: AssignmentRequest = this.registerForm.value;
     this.http.post(url, assignmentRequestMutation).toPromise()
       .then((mutation) => {
-      })
-      .catch((reason: any) => {
+        this.setSuccess();
+        this.assignmentRequestIdService.clear();
+      }).catch((reason: any) => {
+        this.setFailed();
       });
-  }
-
-  hasFailed(): boolean {
-    return false;
   }
 
   showSubmitButton(): boolean {
     return true;
+    // return !this.isWaiting() && !this.hasSucceeded();
   }
 }

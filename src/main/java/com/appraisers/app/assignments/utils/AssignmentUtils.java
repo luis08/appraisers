@@ -1,6 +1,5 @@
 package com.appraisers.app.assignments.utils;
 
-import com.appraisers.app.assignments.domain.AssignmentRequest;
 import com.appraisers.app.assignments.domain.AssignmentRequestBase;
 import com.appraisers.app.assignments.dto.AssignmentRequestDto;
 import com.appraisers.app.assignments.dto.utils.DtoUtils;
@@ -40,7 +39,7 @@ public class AssignmentUtils {
         assignmentRequestBase.setCompanyState(dto.getCompanyState());
         assignmentRequestBase.setCompanyZip(dto.getCompanyZip());
         if (Strings.isNotEmpty(dto.getDateOfLoss())) {
-            assignmentRequestBase.setDateOfLoss(new SimpleDateFormat("MM/dd/yyyy").parse(dto.getDateOfLoss()));
+            assignmentRequestBase.setDateOfLoss(new SimpleDateFormat("yyyy-MM-dd").parse(dto.getDateOfLoss()));
         }
         if (Strings.isNotEmpty(dto.getDeductibleAmount())) {
             assignmentRequestBase.setDeductibleAmount(dto.getDeductibleAmount());

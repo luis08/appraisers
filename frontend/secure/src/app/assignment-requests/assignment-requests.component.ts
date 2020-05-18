@@ -2,13 +2,14 @@ import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {AssignmentRequest} from '../../../../assignment-request/src/app/assignment-request';
 import {HttpClient} from '@angular/common/http';
 import paginate from 'jw-paginate';
+import {AssignmentRequestIdService} from '../assignment-request-id.service';
 
 @Component({
   selector: 'app-assignment-requests',
   templateUrl: './assignment-requests.component.html',
   styleUrls: ['./assignment-requests.component.css']
 })
-export class AssignmentRequestsComponent implements OnInit,  OnChanges {
+export class AssignmentRequestsComponent implements OnInit, OnChanges {
   items = [];
   baseUrl = '/assignments';
   pager = {
@@ -23,8 +24,10 @@ export class AssignmentRequestsComponent implements OnInit,  OnChanges {
   assignmentRequests: AssignmentRequest[];
   assignmentRequest: AssignmentRequest;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private assignmentRequestIdService: AssignmentRequestIdService) {
   }
+
 
   setPage(pageNum: number) {
     this.pager.pageNumber = pageNum;
@@ -40,6 +43,7 @@ export class AssignmentRequestsComponent implements OnInit,  OnChanges {
         this._setPager(response);
       });
   }
+
   ngOnInit() {
     // an example array of 150 items to be paged
     this.items = Array(150).fill(0).map((x, i) => ({id: (i + 1), name: `Item ${i + 1}`}));
@@ -55,7 +59,7 @@ export class AssignmentRequestsComponent implements OnInit,  OnChanges {
   }
 
   open(assignmentRequest: AssignmentRequest) {
-    this.assignmentRequest = assignmentRequest;
+    this.assignmentRequestIdService.set(assignmentRequest.id);
   }
 
   _setPager(response) {
