@@ -13,6 +13,7 @@ import {AssignmentRequestIdService} from '../assignment-request-id.service';
 })
 export class AssignmentRequestComponent extends AssignmentRequestBase implements OnInit {
   @Input() assignmentRequestId: number;
+  identifier: string;
   registerForm: FormGroup;
   assignmentRequest: Observable<AssignmentRequest>;
   baseUrl = '/assignment';
@@ -89,6 +90,12 @@ export class AssignmentRequestComponent extends AssignmentRequestBase implements
     }
   }
 
+  getIdentifier(mutation): string {
+    return mutation && mutation.assignmentRequest && mutation.assignmentRequest.identifier
+      ? mutation.assignmentRequest.identifier
+      : null;
+  }
+
   getAppraisal(): void {
     const url = this.baseUrl + '/latest/' + this.assignmentRequestId;
     this.http.get(url).toPromise()
@@ -99,6 +106,7 @@ export class AssignmentRequestComponent extends AssignmentRequestBase implements
         }, mutation);
         this.registerForm.patchValue(assignmentRequest);
         this.assignmentRequestId = assignmentRequestId;
+        this.identifier = this.getIdentifier(mutation);
       });
   }
 

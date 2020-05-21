@@ -1,6 +1,8 @@
 package com.appraisers.app.assignments.services.impl;
 
 import com.appraisers.app.assignments.domain.AssignmentRequest;
+import com.appraisers.app.assignments.domain.AssignmentRequestBase;
+import com.appraisers.app.assignments.domain.AssignmentRequestMutation;
 import com.appraisers.app.assignments.dto.utils.DtoUtils;
 import com.appraisers.app.assignments.services.AssignmentRequestDocumentService;
 import com.sun.org.apache.bcel.internal.generic.NEW;
@@ -25,13 +27,20 @@ public class AssignmentRequestDocumentServiceImpl implements AssignmentRequestDo
     @Override
     public String getDocument(AssignmentRequest assignmentRequest) {
         checkNotNull(assignmentRequest);
-        return getFullForm(assignmentRequest).toString();
+        return getFullForm(assignmentRequest, assignmentRequest.getIdentifier()).toString();
     }
 
-    private StringBuilder getFullForm(AssignmentRequest assignmentRequest) {
+    @Override
+    public String getDocument(AssignmentRequestMutation assignmentRequestMutation) {
+        checkNotNull(assignmentRequestMutation);
+        String identifier = assignmentRequestMutation.getAssignmentRequest().getIdentifier();
+        return getFullForm(assignmentRequestMutation, identifier).toString();
+    }
+
+    private StringBuilder getFullForm(AssignmentRequestBase assignmentRequest, String identifier) {
         ResourceBundle bundle = getBundle();
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(getLine(bundle, "identifier", assignmentRequest.getIdentifier()))
+        stringBuilder.append(getLine(bundle, "identifier", identifier))
                 .append(NEW_LINE)
                 .append(NEW_LINE)
                 .append(getString(bundle, "companyHeader"))
