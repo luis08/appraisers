@@ -3,6 +3,7 @@ import {AssignmentRequest} from '../../../../assignment-request/src/app/assignme
 import {HttpClient} from '@angular/common/http';
 import paginate from 'jw-paginate';
 import {AssignmentRequestIdService} from '../assignment-request-id.service';
+import {AssignmentRequestSummary} from '../../app/AssignmentRequestSummary';
 
 @Component({
   selector: 'app-assignment-requests',
@@ -11,7 +12,7 @@ import {AssignmentRequestIdService} from '../assignment-request-id.service';
 })
 export class AssignmentRequestsComponent implements OnInit, OnChanges {
   items = [];
-  baseUrl = '/assignments';
+  baseUrl = '/assignments/summaries';
   pager = {
     pageNumber: 1, pageSize: 10,
     currentPage: [],
@@ -21,7 +22,7 @@ export class AssignmentRequestsComponent implements OnInit, OnChanges {
     totalElements: 1
   };
   jwPager: any = {};
-  assignmentRequests: AssignmentRequest[];
+  assignmentRequests: AssignmentRequestSummary[];
   assignmentRequest: AssignmentRequest;
 
   constructor(private http: HttpClient,
@@ -40,6 +41,7 @@ export class AssignmentRequestsComponent implements OnInit, OnChanges {
     this.http.get(this.baseUrl + '?page=' + pageNumber + '&size=' + size).toPromise()
       .then((response: any) => {
         this.assignmentRequests = response.content;
+
         this._setPager(response);
       });
   }
@@ -58,8 +60,8 @@ export class AssignmentRequestsComponent implements OnInit, OnChanges {
     }
   }
 
-  open(assignmentRequest: AssignmentRequest) {
-    this.assignmentRequestIdService.set(assignmentRequest.id);
+  open(assignmentRequest: AssignmentRequestSummary) {
+    this.assignmentRequestIdService.set(assignmentRequest.assignmentRequestId);
   }
 
   _setPager(response) {

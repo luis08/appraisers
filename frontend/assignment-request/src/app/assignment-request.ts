@@ -2,6 +2,8 @@ export class AssignmentRequest {
   id: number;
   identifier: string;
   accountNumber: string;
+  updateEmail: string;
+  sendUpdateEmail: boolean;
   adjusterEmail: string;
   adjusterFirstName: string;
   adjusterLastName: string;

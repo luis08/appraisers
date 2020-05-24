@@ -4,6 +4,7 @@ create table assignment_request_mutation (
   assignment_request_id int not null,
   type varchar(50) not null,
   client_id int,
+  update_email varchar(100),
   company_name varchar(100),
   account_number varchar(50),
   adjuster_last varchar(50),

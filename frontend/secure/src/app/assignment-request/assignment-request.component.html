@@ -10,6 +10,11 @@
             below,
             we'll do the rest.</p>
         </div>
+        <div class="col-md-6 align-self-center">
+          <label for="updateEmail">Update Email</label> &nbsp;&nbsp;Identifier:
+          <input type="text" class="form-control" id="updateEmail" formControlName="updateEmail" required><br/>
+          <label>Send Update:&nbsp; <input type="checkbox" formControlName="sendUpdateEmail" /> </label>
+        </div>
       </div>
       <h4>Client/Company</h4>
       <div class="form-row">
@@ -395,15 +400,18 @@
         <div *ngIf="isWaiting()" class="align-content-center p-4 col-md-12">
           <img alt="Waiting..." src="/static/img/waiting.gif"/>
         </div>
-        <div class="col-md-4" *ngIf="!isWaiting()">
+        <div class="col-md-8" *ngIf="!isWaiting()">
           <div>
             <div *ngIf="hasFailed()">
               <div class="alert alert-danger">Your request failed. Please try again.</div>
               <br/>
             </div>
-            <div>
-              <br/>
+            <br/>
+            <div class="btn-group">
               <button *ngIf="showSubmitButton()" type="button" class="btn btn-primary" (click)="save()">Save
+              </button>
+              &nbsp;&nbsp;&nbsp;
+              <button type="button" class="btn btn-primary" (click)="cancel()">Cancel
               </button>
             </div>
           </div>

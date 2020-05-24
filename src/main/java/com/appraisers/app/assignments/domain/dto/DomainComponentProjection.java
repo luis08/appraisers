@@ -1,21 +1,30 @@
 package com.appraisers.app.assignments.domain.dto;
 
+import com.appraisers.app.assignments.domain.DomainComponent;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DomainComponentProjection {
-    public DomainComponentProjection(Long id, boolean active) {
-        checkNotNull(id);
-        this.id = id;
-        this.active = active;
+    private final DomainComponent component;
+
+    public DomainComponentProjection(DomainComponent component) {
+        checkNotNull(component);
+        this.component = component;
     }
 
-    @Getter
-    private Long id;
+    public Long getId() {
+        return component.getId();
+    }
 
-    @Getter
-    @Setter
-    private boolean active;
+    public boolean isActive() {
+        return component.isActive();
+    }
+
+    public Date getDateCreated() {
+        return component.getDateCreated();
+    }
 }

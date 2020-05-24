@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface AssignmentRequestMutationRepository extends JpaRepository<AssignmentRequestMutation, Long> {
     Optional<AssignmentRequestMutation> findFirstByAssignmentRequestOrderByDateCreatedDesc(AssignmentRequest assignmentRequest);
+    List<AssignmentRequestMutation> findByAssignmentRequest(AssignmentRequest assignmentRequest);
+    List<AssignmentRequestMutation> findByAssignmentRequestIn(List<AssignmentRequest> assignmentRequests);
 }

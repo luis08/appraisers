@@ -31,6 +31,8 @@ export class AssignmentRequestComponent extends AssignmentRequestBase implements
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
       accountNumber: [''],
+      updateEmail: [''],
+      sendUpdateEmail: [false],
       adjusterEmail: [''],
       adjusterFirstName: [''],
       adjusterLastName: [''],
@@ -112,19 +114,30 @@ export class AssignmentRequestComponent extends AssignmentRequestBase implements
 
   save(): void {
     this.setWaiting();
-    const url = this.baseUrl + '/' + this.assignmentRequestId + '/update';
+    let url = this.baseUrl + '/' + this.assignmentRequestId + '/update';
     const assignmentRequestMutation: AssignmentRequest = this.registerForm.value;
+    const sendEmailValue: boolean = this.registerForm.get('sendUpdateEmail').value;
+    console.log('Send Update:' + sendEmailValue);
+
+    if (sendEmailValue) {
+      url = url + '?sendUpdateEmail=true';
+    }
     this.http.post(url, assignmentRequestMutation).toPromise()
       .then((mutation) => {
         this.setSuccess();
         this.assignmentRequestIdService.clear();
       }).catch((reason: any) => {
-        this.setFailed();
-      });
+      this.setFailed();
+    });
   }
 
   showSubmitButton(): boolean {
     return true;
     // return !this.isWaiting() && !this.hasSucceeded();
+  }
+
+  cancel() {
+    this.setSuccess();
+    this.assignmentRequestIdService.clear();
   }
 }

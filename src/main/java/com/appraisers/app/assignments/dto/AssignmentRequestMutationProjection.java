@@ -8,7 +8,7 @@ public class AssignmentRequestMutationProjection extends DomainComponentProjecti
     private final AssignmentRequestMutation component;
 
     public AssignmentRequestMutationProjection(AssignmentRequestMutation assignmentRequestMutation) {
-        super(assignmentRequestMutation.getId(), assignmentRequestMutation.isActive());
+        super(assignmentRequestMutation);
         this.component = assignmentRequestMutation;
     }
 
@@ -205,6 +205,9 @@ public class AssignmentRequestMutationProjection extends DomainComponentProjecti
         return this.component.getYear();
     }
 
+    public String getUpdateEmail() {
+        return component.getUpdateEmail();
+    }
     public AssignmentRequestProjection getAssignmentRequest() {
         return new AssignmentRequestProjection(component.getAssignmentRequest());
     }

@@ -7,7 +7,7 @@ public class AssignmentRequestAttachmentProjection extends DomainComponentProjec
     private AssignmentRequestAttachment component;
 
     public  AssignmentRequestAttachmentProjection(AssignmentRequestAttachment component) {
-        super( component.getId(), component.isActive());
+        super(component);
         this.component = component;
     }
 

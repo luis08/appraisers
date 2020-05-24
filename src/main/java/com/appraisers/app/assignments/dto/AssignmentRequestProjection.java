@@ -11,7 +11,7 @@ public class AssignmentRequestProjection extends DomainComponentProjection {
     private final AssignmentRequest component;
 
     public AssignmentRequestProjection(AssignmentRequest assignmentRequest) {
-        super(assignmentRequest.getId(), assignmentRequest.isActive());
+        super(assignmentRequest);
         this.component = assignmentRequest;
     }
 

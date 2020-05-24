@@ -8,9 +8,9 @@
         <tr>
           <th id="identifier">Id</th>
           <th id="company-name">Company Name</th>
-          <th id="adjuster-first">Adjuster First</th>
-          <th id="adjuster-last">Adjuster Last</th>
-          <th id="adjuster-phone">Adjuster Phone</th>
+          <th id="adjuster-first">Account Number</th>
+          <th id="adjuster-last">Adjuster Name</th>
+          <th id="adjuster-phone">Updates</th>
         </tr>
         </thead>
         <tbody>
@@ -19,9 +19,10 @@
             <button class="btn btn-link" (click)="open(assignmentRequest)">{{assignmentRequest.identifier}}</button>
           </td>
           <td>{{assignmentRequest.companyName}}</td>
-          <td>{{assignmentRequest.adjusterFirstName}}</td>
-          <td>{{assignmentRequest.adjusterLastName}}</td>
-          <td>{{assignmentRequest.adjusterPhone}}</td>
+          <td>{{assignmentRequest.accountNumber}}</td>
+          <td>{{assignmentRequest.adjusterName}}</td>
+          <td>{{assignmentRequest.updateCount}}</td>
+
         </tr>
         </tbody>
       </table>

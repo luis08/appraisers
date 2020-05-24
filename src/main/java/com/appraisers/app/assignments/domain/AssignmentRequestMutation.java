@@ -14,4 +14,8 @@ public class AssignmentRequestMutation extends AssignmentRequestBase {
     @ManyToOne
     @JoinColumn(name = "assignment_request_id")
     private AssignmentRequest assignmentRequest;
+
+    @Getter
+    @Setter
+    private String updateEmail;
 }

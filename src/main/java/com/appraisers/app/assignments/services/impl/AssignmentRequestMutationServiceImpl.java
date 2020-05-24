@@ -16,7 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -53,6 +54,7 @@ public class AssignmentRequestMutationServiceImpl implements AssignmentRequestMu
         AssignmentRequest assignmentRequest = assignmentRequestRepository.getOne(assignmentRequestId);
         AssignmentRequestMutation assignmentRequestMutation = new AssignmentRequestMutation();
         AssignmentUtils.populate(assignmentRequestDto, assignmentRequestMutation);
+        assignmentRequestMutation.setUpdateEmail(assignmentRequestDto.getUpdateEmail());
         assignmentRequestMutation.setAssignmentRequest(assignmentRequest);
         AssignmentRequestMutation savedAssignmentRequestMutation = assignmentRequestMutationRepository.save(assignmentRequestMutation);
         String document = assignmentRequestDocumentService.getDocument(savedAssignmentRequestMutation)
@@ -68,11 +70,33 @@ public class AssignmentRequestMutationServiceImpl implements AssignmentRequestMu
 
     @Override
     public AssignmentRequestMutation get(Long id) {
+        checkNotNull(id);
         return assignmentRequestMutationRepository.getOne(id);
     }
 
     @Override
+    public List<AssignmentRequestMutation> get(List<AssignmentRequest> assignmentRequests) {
+        checkNotNull(assignmentRequests);
+        List<AssignmentRequestMutation> allMutations = assignmentRequestMutationRepository.findByAssignmentRequestIn(assignmentRequests);
+        Map<Long, List<AssignmentRequestMutation>> groups = allMutations.stream().collect(Collectors.groupingBy(m -> m.getAssignmentRequest().getId()));
+        List<AssignmentRequestMutation> mutations = new ArrayList<>();
+
+        for (Map.Entry<Long, List<AssignmentRequestMutation>> group : groups.entrySet()) {
+            List<AssignmentRequestMutation> items = group.getValue();
+            if (!items.isEmpty()) {
+                Optional<AssignmentRequestMutation> max = items.stream().max(Comparator.comparing(AssignmentRequestMutation::getDateCreated));
+                if (max.isPresent()) {
+                    mutations.add(max.get());
+                }
+            }
+        }
+        ;
+        return mutations;
+    }
+
+    @Override
     public AssignmentRequestMutation getLatest(Long assignmentRequestId) {
+        checkNotNull(assignmentRequestId);
         AssignmentRequest assignmentRequest = assignmentRequestRepository.getOne(assignmentRequestId);
         Optional<AssignmentRequestMutation> lastMutation = assignmentRequestMutationRepository.findFirstByAssignmentRequestOrderByDateCreatedDesc(assignmentRequest);
         if (lastMutation.isPresent()) {
@@ -80,6 +104,18 @@ public class AssignmentRequestMutationServiceImpl implements AssignmentRequestMu
         } else {
             return getNewMutation(assignmentRequest);
         }
+    }
+
+    @Override
+    public List<AssignmentRequestMutation> getHistory(AssignmentRequest assignmentRequest) {
+        checkNotNull(assignmentRequest);
+        return assignmentRequestMutationRepository.findByAssignmentRequest(assignmentRequest);
+    }
+
+    @Override
+    public List<AssignmentRequestMutation> getAllHistory(List<AssignmentRequest> assignmentRequests) {
+        checkNotNull(assignmentRequests);
+        return assignmentRequestMutationRepository.findByAssignmentRequestIn(assignmentRequests);
     }
 
     private void sendEmail(String document, String identifier) {
