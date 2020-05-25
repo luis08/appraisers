@@ -90,7 +90,6 @@ public class AssignmentRequestMutationServiceImpl implements AssignmentRequestMu
                 }
             }
         }
-        ;
         return mutations;
     }
 
