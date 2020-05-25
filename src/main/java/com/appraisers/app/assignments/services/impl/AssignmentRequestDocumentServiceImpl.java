@@ -5,7 +5,6 @@ import com.appraisers.app.assignments.domain.AssignmentRequestBase;
 import com.appraisers.app.assignments.domain.AssignmentRequestMutation;
 import com.appraisers.app.assignments.dto.utils.DtoUtils;
 import com.appraisers.app.assignments.services.AssignmentRequestDocumentService;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +22,7 @@ public class AssignmentRequestDocumentServiceImpl implements AssignmentRequestDo
     private static final String HEADER_LINE = "================================================";
 
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
+    private SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 
     @Override
     public String getDocument(AssignmentRequest assignmentRequest) {
@@ -41,6 +41,9 @@ public class AssignmentRequestDocumentServiceImpl implements AssignmentRequestDo
         ResourceBundle bundle = getBundle();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getLine(bundle, "identifier", identifier))
+                .append(NEW_LINE)
+                .append(NEW_LINE)
+                .append(getLine(bundle, "dateCreated", getDateTime(assignmentRequest.getDateCreated())))
                 .append(NEW_LINE)
                 .append(NEW_LINE)
                 .append(getString(bundle, "companyHeader"))
@@ -160,7 +163,9 @@ public class AssignmentRequestDocumentServiceImpl implements AssignmentRequestDo
         return stringBuilder;
     }
 
-
+    private String getDateTime(Date date) {
+        return date == null ? "" : dateTimeFormatter.format(date);
+    }
     private String getDate(Date date) {
         return date == null ? "" : dateFormatter.format(date);
     }

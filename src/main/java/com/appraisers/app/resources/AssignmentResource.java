@@ -106,11 +106,18 @@ public class AssignmentResource {
         }
     }
 
-    @GetMapping("/assignment/{id}/text")
+    @GetMapping(value = "/assignment/{id}/text", produces = MediaType.TEXT_PLAIN_VALUE)
     public String getForm(@PathVariable Long id) {
         checkNotNull(id);
         AssignmentRequest assignmentRequest = assignmentRequestService.get(id);
         return assignmentRequestDocumentService.getDocument(assignmentRequest);
+    }
+
+    @GetMapping(value = "/assignment/mutation/{id}/text", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getUpdateForm(@PathVariable Long id) {
+        checkNotNull(id);
+        AssignmentRequestMutation assignmentRequestMutation = assignmentRequestMutationService.get(id);
+        return assignmentRequestDocumentService.getDocument(assignmentRequestMutation);
     }
 
     @GetMapping("/assignments/{id}")

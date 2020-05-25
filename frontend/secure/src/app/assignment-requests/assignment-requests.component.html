@@ -21,8 +21,15 @@
           <td>{{assignmentRequest.companyName}}</td>
           <td>{{assignmentRequest.accountNumber}}</td>
           <td>{{assignmentRequest.adjusterName}}</td>
-          <td>{{assignmentRequest.updateCount}}</td>
-
+          <td>
+            <button class="btn btn-link" type="button" (click)="toggleHistory(assignmentRequest)">{{assignmentRequest.updateCount}}</button>
+            <ul class="list-group" *ngIf="assignmentRequest.expandedHistory">
+              <li *ngFor="let update of assignmentRequest.updates">
+                <a [attr.href]="getUpdateUrl(update)" target="_blank">
+                  {{update.dateCreated | date: 'short'}}</a>
+              </li>
+            </ul>
+          </td>
         </tr>
         </tbody>
       </table>

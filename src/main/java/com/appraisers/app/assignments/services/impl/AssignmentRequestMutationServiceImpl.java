@@ -69,9 +69,9 @@ public class AssignmentRequestMutationServiceImpl implements AssignmentRequestMu
     }
 
     @Override
-    public AssignmentRequestMutation get(Long id) {
-        checkNotNull(id);
-        return assignmentRequestMutationRepository.getOne(id);
+    public AssignmentRequestMutation get(Long assignmentRequestMutationId) {
+        checkNotNull(assignmentRequestMutationId);
+        return assignmentRequestMutationRepository.getOne(assignmentRequestMutationId);
     }
 
     @Override

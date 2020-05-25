@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import paginate from 'jw-paginate';
 import {AssignmentRequestIdService} from '../assignment-request-id.service';
 import {AssignmentRequestSummary} from '../../app/AssignmentRequestSummary';
+import {DomainComponent} from '../DomainComponent';
 
 @Component({
   selector: 'app-assignment-requests',
@@ -68,5 +69,24 @@ export class AssignmentRequestsComponent implements OnInit, OnChanges {
     this.pager.currentPage = response.content;
     this.pager.totalPages = response.totalPages;
     this.jwPager = paginate(response.totalElements, this.pager.pageNumber, this.pager.pageSize, this.pager.pageLinkDisplayCount);
+  }
+
+  getUpdateUrl(domainComponent: DomainComponent) {
+    return '/assignment/mutation/' + domainComponent.id + '/text';
+  }
+
+  toggleHistory(assignmentRequest: AssignmentRequestSummary) {
+    assignmentRequest.updates.sort((lhs, rhs) => {
+      const lhsTime = new Date(lhs.dateCreated).getTime();
+      const rhsTime = new Date(rhs.dateCreated).getTime();
+      if (lhsTime < rhsTime) {
+        return 1;
+      } else if (lhsTime > rhsTime) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+    assignmentRequest.expandedHistory = !assignmentRequest.expandedHistory;
   }
 }

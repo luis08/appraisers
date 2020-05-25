@@ -6,7 +6,8 @@ export class AssignmentRequestSummary {
   assignmentRequestMutationId: number;
   companyName: string;
   accountNumber: string;
-  updateCount: number
+  updateCount: number;
   updates: Array<DomainComponent>;
   adjusterName: string;
+  expandedHistory: boolean;
 }
