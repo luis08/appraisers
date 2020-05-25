@@ -14,6 +14,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.assignmentRequestIdService.assignmentRequestId.subscribe(
-      (assignmentRequestId: number) => this.assignmentRequestId = assignmentRequestId);
+      (assignmentRequestId: number) => {
+        this.assignmentRequestId = assignmentRequestId
+        window.scroll(0,0);
+      });
   }
 }
