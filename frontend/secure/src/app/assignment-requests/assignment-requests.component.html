@@ -22,6 +22,12 @@
           <td>{{assignmentRequest.accountNumber}}</td>
           <td>{{assignmentRequest.adjusterName}}</td>
           <td>
+            <a href="javascript:void(0)" class="text-decoration-none"
+               *ngIf="!assignmentRequest.expandedHistory"
+               (click)="toggleHistory(assignmentRequest)">&#9658;</a>
+            <a href="javascript:void(0)" class="text-decoration-none"
+               *ngIf="assignmentRequest.expandedHistory"
+               (click)="toggleHistory(assignmentRequest)">&#9660;</a>
             <button class="btn btn-link" type="button" (click)="toggleHistory(assignmentRequest)">{{assignmentRequest.updateCount}}</button>
             <ul class="list-group" *ngIf="assignmentRequest.expandedHistory">
               <li *ngFor="let update of assignmentRequest.updates">
