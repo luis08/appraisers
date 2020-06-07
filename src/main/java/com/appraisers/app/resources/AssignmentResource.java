@@ -11,6 +11,7 @@ import com.appraisers.app.assignments.dto.AssignmentRequestSummaryDto;
 import com.appraisers.app.assignments.services.*;
 import com.appraisers.app.gmail.GmailBuilderService;
 import com.appraisers.app.gmail.GmailService;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,12 @@ public class AssignmentResource {
 
     @GetMapping("/assignment/latest/{id}")
     public ResponseEntity<AssignmentRequestMutationProjection> getAssignmentRequestMutation(@PathVariable Long id) {
-        AssignmentRequestMutation assignmentRequestMutation = assignmentRequestMutationService.getLatest(id);
+        return getLatest(id);
+    }
+
+    @NotNull
+    private ResponseEntity<AssignmentRequestMutationProjection> getLatest(Long assignmentRequestId) {
+        AssignmentRequestMutation assignmentRequestMutation = assignmentRequestMutationService.getLatest(assignmentRequestId);
         if (Objects.isNull(assignmentRequestMutation)) {
             return ResponseEntity.notFound().build();
         } else {
@@ -132,14 +138,14 @@ public class AssignmentResource {
     }
 
     @GetMapping("/assignments/identifier/{identifier}")
-    public ResponseEntity<AssignmentRequestProjection> getByIdentifier(@PathVariable String identifier) {
+    public ResponseEntity<AssignmentRequestMutationProjection> getByIdentifier(@PathVariable String identifier) {
         checkNotNull(identifier);
         AssignmentRequest assignmentRequest = assignmentRequestService.getByIdentifier(identifier);
+
         if (Objects.isNull(assignmentRequest)) {
             return ResponseEntity.notFound().build();
         }
-        AssignmentRequestProjection assignmentRequestProjection = new AssignmentRequestProjection(assignmentRequest);
-        return ResponseEntity.ok().body(assignmentRequestProjection);
+        return getLatest(assignmentRequest.getId());
     }
 
     @GetMapping("/assignments")
