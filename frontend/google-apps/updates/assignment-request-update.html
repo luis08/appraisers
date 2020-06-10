@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        const identifier = $.trim('<?= identifier ?>');
+        const updateEmail = $.trim('<?= updateEmail ?>');
+        const assignmentRequestId = '<?= assignmentRequestId ?>';
+        const includeEmailMessage = updateEmail.length > 0;
+        const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        let hasBeenValidated = false;
+        let isValid = true;
+
+        $(document).ready(() => {
+            //Update the title with the url
+            if (identifier.length === 0) {
+                alert('Bad request, no Assignment Request Identifier: ' + idendifier);
+            } else if (!includedEmailMessage) {
+                $('#includedEmailMessage').hide();
+            }
+        });
+
+        function saveUpdate() {
+            const comments = $('#commentsText').val();
+            const emails = $('#emailAddresses').val();
+            const cc = $('#ccEmails').val();
+
+            function isEmail(str) {
+                return emailRegex.test(str);
+            }
+
+            function validateEmails(str) {
+                const emptyValidation = {
+                    validEmails: [],
+                    invalidEmails: []
+                };
+
+                if ($.trim(str).length === 0) {
+                    console.log('returning empty validation');
+                    return emptyValidation;
+                }
+
+                let emailsArr = str.split(',');
+                let validEmails = [];
+                let invalidEmails = [];
+
+                if (emailsArr.length > 0) {
+                    emailsArr.filter(p => $.trim(p).length > 0).forEach(e => {
+                        let eml = $.trim(e);
+                        if (isEmail(eml)) {
+                            validEmails.push(eml);
+                        } else {
+                            invalidEmails.push(eml);
+                        }
+                    });
+
+                    return {
+                        validEmails: validEmails,
+                        invalidEmails: invalidEmails
+                    };
+                } else {
+                    return emptyValidation;
+                }
+            }
+
+
+            function passedValidation() {
+                const validatedEmails = validateEmails($.trim(emails));
+                const validatedCc = validateEmails($.trim(cc));
+                var isValid = true;
+                console.log('validatedEmails.invalidEmails');
+                console.log(validatedEmails.invalidEmails.length);
+                if (validatedEmails.invalidEmails.length) {
+                    // show bad emails
+                    isValid = false;
+                }
+
+                if (validatedCc.invalidEmails.length) {
+                    // show bad emails
+                    isValid = false;
+                }
+
+                if ($.trim(identifier).length === 0) {
+                    isValid = false;
+                } else if ($.trim(comments).length === 0) {
+                    isValid = false;
+                }
+
+                hasBeenValidated = true;
+                return isValid;
+            }
+
+            function updateDisplay() {
+                console.log("Succeeeedeed  buddy!!!");
+                $('#main-container').text("you're okay");
+            }
+
+            function handleFailure(msg) {
+                console.log(msg);
+            }
+
+            if (passedValidation()) {
+                console.log('Okay - wer are calling the script');
+                var payload = {
+                    identifier: identifier,
+                    assignmentRequestId: assignmentRequestId,
+                    emails: emails,
+                    cc: cc,
+                    comments: comments
+                };
+                console.log(payload);
+
+                google.script.run.withSuccessHandler(function (contents) {
+                    // Respond to success conditions here.
+                    updateDisplay(contents);
+                }).withFailureHandler(function (msg) {
+                        // Respond to failure conditions here.
+                        handleFailure(msg);
+                }).doUpdateRequest(payload);
+            } else {
+                alert('Please request a valid URL to this form');
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container" id="main-container">
+    <br/>
+    <br/>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h3>Assignment Request Update (<?= identifier ?>) for <?= companyName ?></h3>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+
+            <p>Please include email addresses of additional recipients. <span id="includedEmailMessage">We will send this email to <?= updateEmail ?>
+                as well.</span></p>
+
+            <input id="assignment-request-id" type="hidden"/>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="emailAddresses">Email Address Separated by Comma</label>
+                    <input class="form-control" id="emailAddresses" name="emailAddresses" placeholder="Emails"
+                           type="text">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="ccEmails">CC Email Address Separated by Comma</label>
+                    <input class="form-control" id="ccEmails" name="ccEmails" type="text">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <p>Update Comments</p>
+                    <textarea class="form-control" id="commentsText" name="commentsText" rows="10"></textarea>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="saveUpdate()" type="button">Submit</button>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
