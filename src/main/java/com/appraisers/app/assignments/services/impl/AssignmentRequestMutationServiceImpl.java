@@ -25,9 +25,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class AssignmentRequestMutationServiceImpl implements AssignmentRequestMutationService {
     private static final String LINE_SEPARATOR = System.lineSeparator();
     public static final String NO_ATTACHMENT_CHANGES = "No attachment changes with this update";
+    public static final String IDENTIFIER_PARAMETER_LABEL = "?identifier=";
+    public static final String UPDATE_LINK_HEADER = "Update link";
 
     @Value("${com.appraisers.app.assignmentRequest.notificationEmail}")
     private String notificationEmail;
+
+    @Value("${com.appraisers.app.assignmentRequest.update.link}")
+    private String updateLink;
 
     @Autowired
     private AssignmentRequestMutationRepository assignmentRequestMutationRepository;
@@ -59,11 +64,18 @@ public class AssignmentRequestMutationServiceImpl implements AssignmentRequestMu
         AssignmentRequestMutation savedAssignmentRequestMutation = assignmentRequestMutationRepository.save(assignmentRequestMutation);
         String document = assignmentRequestDocumentService.getDocument(savedAssignmentRequestMutation)
                 .concat(LINE_SEPARATOR)
-                .concat(NO_ATTACHMENT_CHANGES);
+                .concat(NO_ATTACHMENT_CHANGES)
+                .concat(LINE_SEPARATOR)
+                .concat(LINE_SEPARATOR)
+                .concat(UPDATE_LINK_HEADER)
+                .concat(LINE_SEPARATOR)
+                .concat(updateLink).concat(IDENTIFIER_PARAMETER_LABEL).concat(assignmentRequest.getIdentifier())
+                .concat(LINE_SEPARATOR);
         String documentSavedMessage = assignmentRequestDocumentUploadService.getDocumentUploadedMessage(document, assignmentRequest, assignmentRequest.getIdentifier());
         document = document.concat(LINE_SEPARATOR)
                 .concat(LINE_SEPARATOR)
                 .concat(documentSavedMessage);
+
         sendEmail(document, assignmentRequest.getIdentifier());
         return savedAssignmentRequestMutation;
     }
@@ -98,11 +110,7 @@ public class AssignmentRequestMutationServiceImpl implements AssignmentRequestMu
         checkNotNull(assignmentRequestId);
         AssignmentRequest assignmentRequest = assignmentRequestRepository.getOne(assignmentRequestId);
         Optional<AssignmentRequestMutation> lastMutation = assignmentRequestMutationRepository.findFirstByAssignmentRequestOrderByDateCreatedDesc(assignmentRequest);
-        if (lastMutation.isPresent()) {
-            return lastMutation.get();
-        } else {
-            return getNewMutation(assignmentRequest);
-        }
+        return lastMutation.orElse(getNewMutation(assignmentRequest));
     }
 
     @Override
