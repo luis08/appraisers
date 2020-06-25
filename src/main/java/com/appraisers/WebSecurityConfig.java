@@ -12,20 +12,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // SSL https://frugalisminds.com/spring-boot/how-to-configure-ssl-in-spring-boot-2/
         //Oauth2 https://spring.io/guides/tutorials/spring-boot-oauth2/
-        http.csrf().disable();
-        http.authorizeRequests()
-                .antMatchers("/assignment-request**")
-                .permitAll()
-                .and()
-                .formLogin()
-                .permitAll()
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
-                .and()
+        http.csrf().disable()
                 .authorizeRequests()
-                .anyRequest()
-                .authenticated();
+                .antMatchers("/secure/**").authenticated()
+                .and()
+                .formLogin().permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/**")
+                .permitAll();
     }
 }
