@@ -159,7 +159,7 @@ public class AssignmentResource {
         checkNotNull(id);
         AssignmentRequest assignmentRequest = assignmentRequestService.get(id);
         List<DomainComponent> updates = assignmentRequestHistoricService.getUpdates(assignmentRequest);
-        return updates.stream().map(c -> new DomainComponentProjection(c))
+        return updates.stream().map(DomainComponentProjection::new)
                 .collect(Collectors.toList());
     }
 
@@ -180,7 +180,8 @@ public class AssignmentResource {
     }
 
     private void sendEmail(String document, String identifier, String email) {
-        String subject = String.format("Update for Assignment Request %s", identifier);
+        String subject = String.format("Update for Assignment Request %s",
+                identifier);
         gmailBuilderService.setTo(email)
                 .setSubject(subject)
                 .setBody(document)
