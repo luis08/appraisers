@@ -10,8 +10,21 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //Oauth2 https://spring.io/guides/tutorials/spring-boot-oauth2/
         http.csrf().disable();
-        http.authorizeRequests()//
-                .antMatchers("/").permitAll();
+        http.authorizeRequests()
+                .antMatchers("/assignment-request**")
+                .permitAll()
+                .and()
+                .formLogin()
+                .permitAll()
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .and()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated();
     }
 }
